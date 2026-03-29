@@ -68,24 +68,17 @@ else:
             st.session_state.clear()
             st.rerun()
 
-    # 6. 대망의 [기억력 복원 및 엔진 가동] 로직
-    if "chat_session" not in st.session_state:
+    # 6. 대망의 [기억력 복원 및 엔진 가동] 로직 (세션 꼬임 완벽 해결)
+    if "chat_history" not in st.session_state:
         # DB 창고에서 '내 이름(user_name)'으로 된 예전 대화 기록 싹 다 가져오기
         response = supabase.table("chat_memory").select("*").eq("user_name", user_name).order("id").execute()
         db_history = response.data
 
         st.session_state.chat_history = []
-        gemini_history = [] # 제미나이 뇌에 집어넣을 기억 세트
         
-        # 가져온 DB 기록을 화면과 제미나이 뇌에 맞게 분류해서 넣어줌
+        # 가져온 DB 기록을 화면용으로 복원
         for row in db_history:
-            role = row["role"]
-            text = row["message"]
-            st.session_state.chat_history.append((role, text))
-            
-            # 제미나이 엔진은 'assistant' 대신 'model'이라는 단어를 써서 변환해줌
-            gemini_role = "model" if role == "assistant" else "user"
-            gemini_history.append({"role": gemini_role, "parts": [{"text": text}]})
+            st.session_state.chat_history.append((row["role"], row["message"]))
 
         # 만약 DB가 텅 비어있다? (= 처음 왔거나 방금 초기화했다면) 선톡 날리기!
         if not db_history:
@@ -94,37 +87,38 @@ else:
             
             # 이 첫 인사도 DB에 저장!
             supabase.table("chat_memory").insert({"user_name": user_name, "role": "assistant", "message": first_msg}).execute()
-            gemini_history.append({"role": "model", "parts": [{"text": first_msg}]})
-
-        # 제미나이 엔진 가동! (이때 과거 기억인 gemini_history를 뇌에 주입함)
-        st.session_state.chat_session = client.chats.create(
-            model="gemini-2.5-flash", 
-            config={"system_instruction": winter_persona},
-            history=gemini_history
-        )
 
     # 7. 이전 대화 기록 화면에 띄워주기
     for role, text in st.session_state.chat_history:
         with st.chat_message(role, avatar="❄️" if role == "assistant" else None):
             st.markdown(text)
 
-    # 8. 실시간 채팅 및 DB 저장 로직
+    # 8. 실시간 채팅 및 DB 저장 로직 (엔진을 매번 새로 만들어서 Closed 에러 원천 차단!)
     if user_input := st.chat_input("겨울이에게 메시지 보내기"):
-        # 내 채팅 화면에 띄우기
+        # 내 채팅 화면 띄우고 DB 저장
         with st.chat_message("user"):
             st.markdown(user_input)
         st.session_state.chat_history.append(("user", user_input))
-        
-        # [DB 저장] 내가 친 채팅 수파베이스 장부에 기록!
         supabase.table("chat_memory").insert({"user_name": user_name, "role": "user", "message": user_input}).execute()
 
-        # 겨울이 대답 받아오기
-        response = st.session_state.chat_session.send_message(user_input)
+        # [핵심] 제미나이 뇌에 꽂아줄 과거 기억 세팅 (방금 친 채팅 제외)
+        gemini_history = []
+        for r, t in st.session_state.chat_history[:-1]: 
+            gemini_role = "model" if r == "assistant" else "user"
+            gemini_history.append({"role": gemini_role, "parts": [{"text": t}]})
+
+        # 방금 막 생성된 쌩쌩한 엔진으로 대화방 임시 생성 (오류 해결의 마스터키)
+        temp_chat = client.chats.create(
+            model="gemini-2.5-flash", 
+            config={"system_instruction": winter_persona},
+            history=gemini_history
+        )
         
-        # 겨울이 대답 화면에 띄우기
+        # 겨울이 대답 받아오기
+        response = temp_chat.send_message(user_input)
+        
+        # 겨울이 대답 화면 띄우고 DB 저장
         with st.chat_message("assistant", avatar="❄️"):
             st.markdown(response.text)
         st.session_state.chat_history.append(("assistant", response.text))
-        
-        # [DB 저장] 겨울이가 친 대답도 수파베이스 장부에 기록!
         supabase.table("chat_memory").insert({"user_name": user_name, "role": "assistant", "message": response.text}).execute()
