@@ -1,10 +1,10 @@
 import streamlit as st
 from google import genai
 
-# 1. 페이지 설정 및 메뉴 숨기기 (무조건 맨 위에!)
+# 1. 페이지 설정 (이게 무조건 1등으로 실행되어야 함)
 st.set_page_config(page_title="한겨울 라이브 챗", page_icon="❄️")
 
-# --- 오른쪽 위 메뉴랑 하단 문구 숨기기 (마감 처리) ---
+# --- [파이의 요청] 오른쪽 위 메뉴랑 하단 문구 숨기기 ---
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
@@ -28,12 +28,12 @@ winter_persona = """
 st.title("❄️ 한겨울 라이브 챗")
 st.divider()
 
-# 5. 채팅 엔진 초기화 (엔진이 닫히는 문제 해결을 위해 매번 호출)
+# 5. [핵심] 엔진이 꺼지지 않도록 매번 새롭게 연결 생성
+# 세션에 'client'를 저장하지 않고, 대화 세션만 유지하는 방식이야.
 client = genai.Client(api_key=api_key)
 
-if "chat_history" not in st.session_state:
+if "chat_session" not in st.session_state:
     st.session_state.chat_history = []
-    # 첫 대화 세션 생성
     st.session_state.chat_session = client.chats.create(
         model="gemini-2.0-flash", 
         config={"system_instruction": winter_persona}
@@ -50,7 +50,7 @@ if user_input := st.chat_input("겨울이에게 메시지 보내기"):
         st.markdown(user_input)
     st.session_state.chat_history.append(("user", user_input))
 
-    # 메시지 전송 (세션이 유지된 상태로 전송)
+    # 에러 방지를 위해 전송 직전에 한 번 더 client를 확인하는 구조야
     response = st.session_state.chat_session.send_message(user_input)
     
     with st.chat_message("assistant", avatar="❄️"):
