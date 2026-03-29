@@ -3,6 +3,15 @@ from google import genai
 
 # 1. 페이지 설정
 st.set_page_config(page_title="한겨울 라이브 챗", page_icon="❄️")
+# 기존 설정 아래에 이 CSS 코드를 추가하면 메뉴가 마법처럼 사라져!
+hide_menu_style = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        </style>
+        """
+st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 # 2. 스트림릿 금고(Secrets)에서 키 가져오기
 # (에러 방지를 위해 직접 적지 않고 금고에서만 가져옴)
