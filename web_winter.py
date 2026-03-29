@@ -5,7 +5,6 @@ from supabase import create_client, Client
 # 1. 페이지 설정 및 깔끔한 출고용 마감
 st.set_page_config(page_title="한겨울 라이브 챗", page_icon="❄️")
 
-# 🚨 [메뉴 완벽 숨기기 부활!] 아예 지붕(header)을 다 날려버립니다.
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
@@ -16,7 +15,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. 스트림릿 금고에서 열쇠 꺼내오기!
+# 2. 스트림릿 금고에서 열쇠 꺼내오기
 api_key = st.secrets["GOOGLE_API_KEY"]
 supabase_url = st.secrets["SUPABASE_URL"]
 supabase_key = st.secrets["SUPABASE_KEY"]
@@ -25,7 +24,7 @@ supabase_key = st.secrets["SUPABASE_KEY"]
 supabase: Client = create_client(supabase_url, supabase_key)
 client = genai.Client(api_key=api_key)
 
-# 4. 문지기 로직 (온보딩)
+# 4. 문지기 로직
 if "user_name" not in st.session_state:
     st.title("❄️ 한겨울 라이브 챗 접속")
     st.write("한겨울이 당신을 뭐라고 불러드릴까요?")
@@ -38,7 +37,7 @@ if "user_name" not in st.session_state:
         st.session_state.user_name = name_input
         st.rerun()
 
-# 5. 진짜 채팅방 입장!
+# 5. 진짜 채팅방 입장
 else:
     user_name = st.session_state.user_name
     
@@ -72,7 +71,6 @@ else:
         db_history = response.data
 
         st.session_state.chat_history = []
-        
         for row in db_history:
             st.session_state.chat_history.append((row["role"], row["message"]))
 
@@ -85,31 +83,44 @@ else:
         with st.chat_message(role, avatar="❄️" if role == "assistant" else None):
             st.markdown(text)
 
-    # 8. 실시간 채팅 및 제미나이 강박증 치료 로직!
+    # 8. 실시간 채팅 및 [DB 오염 완벽 정화 필터] 로직!
     if user_input := st.chat_input("겨울이에게 메시지 보내기"):
         with st.chat_message("user"):
             st.markdown(user_input)
         st.session_state.chat_history.append(("user", user_input))
         supabase.table("chat_memory").insert({"user_name": user_name, "role": "user", "message": user_input}).execute()
 
-        # 🚨 [핵심 버그 수정] 제미나이 뇌에 기억을 꽂을 때, '겨울이 선톡'은 쿨하게 빼버립니다!
-        history_for_gemini = st.session_state.chat_history[:-1]
+        # 🚨 [핵심 방어벽] 제미나이의 결벽증을 만족시키기 위해 꼬인 기억을 다듬습니다.
+        raw_history = st.session_state.chat_history[:-1]
+        valid_history = []
+        target_role = "assistant"
         
-        # 만약 기록의 맨 첫 번째가 AI(assistant)라면? 제미나이가 빡치기 전에 리스트에서 삭제!
-        if len(history_for_gemini) > 0 and history_for_gemini[0][0] == "assistant":
-            history_for_gemini = history_for_gemini[1:]
-
+        # 뒤에서부터 거꾸로 읽으면서 'AI -> 사람 -> AI' 순서가 맞는 것만 채택!
+        for r, t in reversed(raw_history):
+            if r == target_role:
+                valid_history.append((r, t))
+                target_role = "user" if target_role == "assistant" else "assistant"
+                
+        valid_history.reverse()
+        
         gemini_history = []
-        for r, t in history_for_gemini: 
+        for r, t in valid_history:
             gemini_role = "model" if r == "assistant" else "user"
             gemini_history.append({"role": gemini_role, "parts": [{"text": t}]})
+            
+        # 첫 번째 기억이 'AI'면 규칙 위반이므로 살포시 지워줌
+        if len(gemini_history) > 0 and gemini_history[0]["role"] == "model":
+            gemini_history = gemini_history[1:]
 
-        temp_chat = client.chats.create(
-            model="gemini-2.5-flash", 
-            config={"system_instruction": winter_persona},
-            history=gemini_history
-        )
-        
+        # 정화된 기억만 안전하게 주입
+        kwargs = {
+            "model": "gemini-2.5-flash", 
+            "config": {"system_instruction": winter_persona}
+        }
+        if gemini_history:
+            kwargs["history"] = gemini_history
+
+        temp_chat = client.chats.create(**kwargs)
         response = temp_chat.send_message(user_input)
         
         with st.chat_message("assistant", avatar="❄️"):
