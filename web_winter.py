@@ -1,10 +1,10 @@
 import streamlit as st
 from google import genai
 
-# 1. 페이지 설정 및 메뉴 숨기기 (무조건 맨 위!)
+# 1. 페이지 설정 및 메뉴 숨기기 (이게 제일 위에 있어야 함)
 st.set_page_config(page_title="한겨울 라이브 챗", page_icon="❄️")
 
-# --- 오른쪽 위 메뉴 및 하단 문구 강제 삭제 ---
+# --- 오른쪽 위 메뉴랑 하단 문구 숨기기 (파이가 원했던 깔끔 마감!) ---
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
@@ -28,8 +28,9 @@ winter_persona = """
 st.title("❄️ 한겨울 라이브 챗")
 st.divider()
 
-# 5. 세션 관리 및 엔진 초기화 (가장 심플한 구조로 복구)
+# 5. 세션 관리 및 엔진 초기화 (엔진이 꺼지지 않도록 세션에 저장)
 if "chat_session" not in st.session_state:
+    # 클라이언트를 세션에 저장하지 않고 직접 호출해서 세션을 만들어
     client = genai.Client(api_key=api_key)
     st.session_state.chat_history = []
     st.session_state.chat_session = client.chats.create(
@@ -44,13 +45,15 @@ for role, text in st.session_state.chat_history:
 
 # 7. 채팅 입력 및 처리
 if user_input := st.chat_input("겨울이에게 메시지 보내기"):
+    # 유저 메시지 표시
     with st.chat_message("user"):
         st.markdown(user_input)
     st.session_state.chat_history.append(("user", user_input))
 
-    # 여기서 바로 대답 받기 (복잡한 에러 처리 삭제)
+    # 겨울이 대답 받기
     response = st.session_state.chat_session.send_message(user_input)
     
+    # 겨울이 메시지 표시
     with st.chat_message("assistant", avatar="❄️"):
         st.markdown(response.text)
     st.session_state.chat_history.append(("assistant", response.text))
