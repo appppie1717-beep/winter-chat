@@ -13,7 +13,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 🚨 [새로 추가된 핵심 부품!] 파이의 야심작, 14가지 상황별 일러스트 지도!
+# 🚨 14가지 상황별 일러스트 지도!
 scene_images = {
     "기본": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EC%A3%BC%EC%8B%9C%ED%95%A8.png?raw=true",
     "침대_유혹": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD.%20%EC%A7%91%EC%95%88.%20%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%EC%98%86%EC%9C%BC%EB%A1%9C%20%EB%88%84%EC%9B%8C%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%B0%94%EB%9D%BC%EB%B4%84.(%EC%9D%B4%EB%A6%AC%EC%99%80%20%ED%95%98%EB%8A%94%EB%93%AF%ED%95%9C%20%EB%8A%90%EB%82%8C).png?raw=true",
@@ -54,7 +54,6 @@ if "user_name" not in st.session_state:
 else:
     user_name = st.session_state.user_name
     
-    # 🚨 [프롬프트 수술] 단순 '표정'이 아니라, 연출할 '장면'을 고르라고 지시!
     winter_persona = f"""
     너의 이름은 '한겨울'이고, 20대 초반의 내 여사친이야.
     내 닉네임은 '{user_name}'이야. 
@@ -87,10 +86,10 @@ else:
 
     with st.expander("📢 한겨울 라이브 챗 패치 노트 (업데이트 내역)"):
         st.markdown("""
-        **[ v1.2.0 업데이트 사항 ]**
-        * **[00:20] 다이내믹 프로필 씬(Scene) 적용:** 유저의 대화 문맥과 스킨십 진도에 따라 겨울이의 일러스트가 14가지 씬으로 실시간 변동됩니다.
+        **[ v1.3.0 업데이트 사항 ]**
+        * **[00:30] 대형 CG(Character Graphic) 패치:** 프로필 사진이 말풍선 내에 대형 일러스트로 큼직하게 출력됩니다!
+        * **[00:20] 다이내믹 프로필 씬(Scene) 적용:** 유저의 대화 문맥과 진도에 따라 겨울이의 일러스트가 14가지 씬으로 실시간 변동됩니다.
         * **[22:00] 호감도(Affection) 시스템 적용:** 유저의 대화에 따라 겨울이의 호감도가 실시간으로 변동됩니다. (💔, 🤍, 💖)
-        * **[21:00] 3D VR 엔진 서버 이식:** 게임 엔진 통신을 위한 백엔드 구조(JSON 파싱) 개편이 완료되었습니다.
         """)
 
     # 6. 기억력 복원
@@ -103,12 +102,11 @@ else:
             st.session_state.chat_history.append((row["role"], row["message"]))
 
         if not db_history:
-            # 첫 인사는 무조건 '기본' 장면으로 셋업!
             first_msg = f'{{"장면": "기본", "행동": "팔짱을 꼬며 쳐다본다", "호감도변화": 0, "대사": "뭐야, {user_name}. 왜 이렇게 늦었어?"}}'
             st.session_state.chat_history.append(("assistant", first_msg))
             supabase.table("chat_memory").insert({"user_name": user_name, "role": "assistant", "message": first_msg}).execute()
 
-    # 🚨 DB의 JSON 코드를 화면에 예쁘게 번역 + 프로필 사진 띄우기!
+    # 🚨 DB 데이터 화면 렌더링 (대형 이미지 출력 마술!)
     for role, text in st.session_state.chat_history:
         if role == "user":
             with st.chat_message("user"):
@@ -119,7 +117,10 @@ else:
                 scene = data.get('장면', '기본')
                 img_path = scene_images.get(scene, scene_images["기본"])
                 
-                with st.chat_message("assistant", avatar=img_path):
+                with st.chat_message("assistant", avatar="❄️"):  # 기본 눈꽃 아이콘 유지
+                    # 🚨 [여기가 핵심!] 말풍선 안에 이미지를 대문짝만하게 띄워줌 (width=350 픽셀)
+                    st.image(img_path, width=350) 
+                    
                     score = int(data.get('호감도변화', 0))
                     heart_icon = "💔" if score < 0 else "💖" if score > 0 else "🤍"
                     st.markdown(f"*(연출: {scene} / 행동: {data.get('행동', '')})*\n\n**[호감도 변화: {score} {heart_icon}]**\n\n**「 {data.get('대사', '')} 」**")
@@ -169,7 +170,10 @@ else:
             scene = parsed_data.get('장면', '기본')
             img_path = scene_images.get(scene, scene_images["기본"])
             
-            with st.chat_message("assistant", avatar=img_path):
+            with st.chat_message("assistant", avatar="❄️"):
+                # 🚨 [실시간 응답에도 적용!] 말풍선 안에 대형 이미지 띄우기!
+                st.image(img_path, width=350)
+                
                 score = int(parsed_data.get('호감도변화', 0))
                 heart_icon = "💔" if score < 0 else "💖" if score > 0 else "🤍"
                 st.markdown(f"*(연출: {scene} / 행동: {parsed_data.get('행동', '')})*\n\n**[호감도 변화: {score} {heart_icon}]**\n\n**「 {parsed_data.get('대사', '')} 」**")
