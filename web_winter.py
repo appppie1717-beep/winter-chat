@@ -115,7 +115,7 @@ else:
 
         # 🚨 [가장 중요한 변화] 버그투성이인 chats 기능(자동)을 버리고, generate_content(수동)로 엔진에 직결!
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.0-flash",
             contents=contents,
             config={"system_instruction": winter_persona}
         )
