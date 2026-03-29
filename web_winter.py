@@ -184,4 +184,16 @@ else:
             scene = parsed_data.get('장면', '기본')
             img_path = scene_images.get(scene, scene_images["기본"])
             
-            with st.chat_message("assistant",
+            with st.chat_message("assistant", avatar="❄️"):
+                st.image(img_path, width=350)
+                score = int(parsed_data.get('호감도변화', 0))
+                heart_icon = "💔" if score < 0 else "💖" if score > 0 else "🤍"
+                st.markdown(f"*(연출: {scene} / 행동: {parsed_data.get('행동', '')})*\n\n**[호감도 변화: {score} {heart_icon}]**\n\n**「 {parsed_data.get('대사', '')} 」**")
+        except:
+            with st.chat_message("assistant", avatar="❄️"):
+                st.markdown(raw_json_text)
+                
+        st.session_state.chat_history.append(("assistant", raw_json_text))
+        supabase.table("chat_memory").insert({"user_name": user_name, "role": "assistant", "message": raw_json_text}).execute()
+        
+        st.rerun()
