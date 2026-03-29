@@ -1,5 +1,6 @@
 import streamlit as st
 from google import genai
+from google.genai import types  # 🚨 [새로 추가된 핵심 부품!] 완벽한 규격을 위한 도구
 from supabase import create_client, Client
 
 # 1. 페이지 설정 및 깔끔한 출고용 마감
@@ -83,45 +84,41 @@ else:
         with st.chat_message(role, avatar="❄️" if role == "assistant" else None):
             st.markdown(text)
 
-    # 8. 실시간 채팅 및 [DB 오염 완벽 정화 필터] 로직!
+    # 8. 실시간 채팅 (구글 SDK 버그 원천 차단하는 완전 수동 모드!)
     if user_input := st.chat_input("겨울이에게 메시지 보내기"):
         with st.chat_message("user"):
             st.markdown(user_input)
         st.session_state.chat_history.append(("user", user_input))
         supabase.table("chat_memory").insert({"user_name": user_name, "role": "user", "message": user_input}).execute()
 
-        # 🚨 [핵심 방어벽] 제미나이의 결벽증을 만족시키기 위해 꼬인 기억을 다듬습니다.
-        raw_history = st.session_state.chat_history[:-1]
+        # [수동 필터링] 마지막 채팅(user)을 기준으로 뒤로 가며 번갈아가는 기록만 수집
+        raw_history = st.session_state.chat_history
         valid_history = []
-        target_role = "assistant"
+        target_role = "user"
         
-        # 뒤에서부터 거꾸로 읽으면서 'AI -> 사람 -> AI' 순서가 맞는 것만 채택!
         for r, t in reversed(raw_history):
             if r == target_role:
                 valid_history.append((r, t))
-                target_role = "user" if target_role == "assistant" else "assistant"
+                target_role = "assistant" if target_role == "user" else "user"
                 
         valid_history.reverse()
         
-        gemini_history = []
+        # 첫 줄이 assistant면 규칙 위반이므로 제거
+        if len(valid_history) > 0 and valid_history[0][0] == "assistant":
+            valid_history = valid_history[1:]
+
+        # 🚨 [핵심!] 구글이 요구하는 완벽한 공식 규격(types.Content)으로 한 땀 한 땀 포장
+        contents = []
         for r, t in valid_history:
-            gemini_role = "model" if r == "assistant" else "user"
-            gemini_history.append({"role": gemini_role, "parts": [{"text": t}]})
-            
-        # 첫 번째 기억이 'AI'면 규칙 위반이므로 살포시 지워줌
-        if len(gemini_history) > 0 and gemini_history[0]["role"] == "model":
-            gemini_history = gemini_history[1:]
+            role = "model" if r == "assistant" else "user"
+            contents.append(types.Content(role=role, parts=[types.Part.from_text(text=t)]))
 
-        # 정화된 기억만 안전하게 주입
-        kwargs = {
-            "model": "gemini-2.5-flash", 
-            "config": {"system_instruction": winter_persona}
-        }
-        if gemini_history:
-            kwargs["history"] = gemini_history
-
-        temp_chat = client.chats.create(**kwargs)
-        response = temp_chat.send_message(user_input)
+        # 🚨 [가장 중요한 변화] 버그투성이인 chats 기능(자동)을 버리고, generate_content(수동)로 엔진에 직결!
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=contents,
+            config={"system_instruction": winter_persona}
+        )
         
         with st.chat_message("assistant", avatar="❄️"):
             st.markdown(response.text)
