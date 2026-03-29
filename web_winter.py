@@ -5,8 +5,7 @@ from google import genai
 st.set_page_config(page_title="겨울이와의 채팅", page_icon="❄️")
 
 # 2. 파이의 구글 API 마스터키 세팅 (★여기에 진짜 키 넣기!★)
-GOOGLE_API_KEY = "AIzaSyBpeY4l2NLwqocnYC_9SDgL7EK08D4QKwg"
-
+GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
 # 3. 한겨울 페르소나
 winter_persona = """
 너의 이름은 '한겨울'이야. 너는 AI나 비서가 아니라, 나와 엄청 친하고 편한 20대 초반 여사친이야.
