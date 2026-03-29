@@ -70,25 +70,10 @@ else:
             
     st.divider()
 
-    col1, col2 = st.columns([7, 3])
-    with col1:
-        st.title(f"❄️ {user_name} & 한겨울")
-    with col2:
-        st.write("") 
-        if st.button("🔄 기억 리셋", use_container_width=True):
-            supabase.table("chat_memory").delete().eq("user_name", user_name).execute()
-            st.session_state.clear()
-            st.rerun()
-            
-    st.divider()
-
-    # 🚨 [GM 파이 긴급 공지 추가!] 유저들이 무조건 볼 수밖에 없는 노란색 배너 띄우기!
-    st.warning("📢 **[시스템 공지]** 밤 10시부터 3D VR 엔진 업그레이드 작업이 진행됩니다! 10시 이후 대화 중 끊김이나 오류가 발생할 수 있으니 양해 부탁드립니다.", icon="⚠️")
-
     # 6. 기억력 복원
     if "chat_history" not in st.session_state:
         response = supabase.table("chat_memory").select("*").eq("user_name", user_name).order("id").execute()
-
+        db_history = response.data
 
         st.session_state.chat_history = []
         for row in db_history:
