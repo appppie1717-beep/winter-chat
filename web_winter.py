@@ -6,6 +6,15 @@ from supabase import create_client, Client
 # 1. 페이지 설정 및 깔끔한 출고용 마감
 st.set_page_config(page_title="한겨울 라이브 챗", page_icon="❄️")
 
+# 🚨 [수정됨] 지붕(header) 숨기기를 빼서 점 세 개 메뉴를 부활시키고, 짜치는 Deploy 버튼만 핀셋으로 암살!
+st.markdown("""
+
+    <style>
+    footer {visibility: hidden;}
+    .stDeployButton {display:none;}
+    </style>
+    """, unsafe_allow_html=True)
+
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
