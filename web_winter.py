@@ -3,7 +3,8 @@ from google import genai
 
 # 1. 페이지 설정
 st.set_page_config(page_title="한겨울 라이브 챗", page_icon="❄️")
-# 기존 설정 아래에 이 CSS 코드를 추가하면 메뉴가 마법처럼 사라져!
+
+# --- 여기서부터 메뉴 숨기기 코드 ---
 hide_menu_style = """
         <style>
         #MainMenu {visibility: hidden;}
