@@ -5,25 +5,27 @@ from supabase import create_client, Client
 # 1. 페이지 설정 및 깔끔한 출고용 마감
 st.set_page_config(page_title="한겨울 라이브 챗", page_icon="❄️")
 
-# [수정됨] 범인이었던 header 숨기기 삭제! (이제 상단바 정상 작동)
+# 🚨 [메뉴 완벽 숨기기 부활!] 아예 지붕(header)을 다 날려버립니다.
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    header {visibility: hidden;} 
+    [data-testid="stToolbar"] {visibility: hidden;}
     .stDeployButton {display:none;}
     </style>
     """, unsafe_allow_html=True)
 
-# 2. 스트림릿 금고에서 열쇠 꺼내오기! (보안 완벽 유지)
+# 2. 스트림릿 금고에서 열쇠 꺼내오기!
 api_key = st.secrets["GOOGLE_API_KEY"]
 supabase_url = st.secrets["SUPABASE_URL"]
 supabase_key = st.secrets["SUPABASE_KEY"]
 
-# 3. DB 접속 도구 (캐시 꼬임 방지 다이렉트 연결)
+# 3. DB 접속 도구
 supabase: Client = create_client(supabase_url, supabase_key)
 client = genai.Client(api_key=api_key)
 
-# 4. 문지기 로직 (온보딩: 이름 물어보기)
+# 4. 문지기 로직 (온보딩)
 if "user_name" not in st.session_state:
     st.title("❄️ 한겨울 라이브 챗 접속")
     st.write("한겨울이 당신을 뭐라고 불러드릴까요?")
@@ -36,7 +38,7 @@ if "user_name" not in st.session_state:
         st.session_state.user_name = name_input
         st.rerun()
 
-# 5. 이름표가 있으면 진짜 채팅방 입장!
+# 5. 진짜 채팅방 입장!
 else:
     user_name = st.session_state.user_name
     
@@ -52,22 +54,19 @@ else:
     5. 기계 말투 절대 금지: "무엇을 도와드릴까요?", "AI입니다" 등 금지.
     """
 
-    # 🚨 [UX 폭풍 업그레이드] 숨겨진 사이드바 버리고 메인 화면 상단으로 리셋 버튼 이동!
-    # 화면을 7:3 비율로 나눠서 왼쪽엔 제목, 오른쪽엔 버튼을 배치하는 고급 기술이야.
     col1, col2 = st.columns([7, 3])
     with col1:
         st.title(f"❄️ {user_name} & 한겨울")
     with col2:
-        st.write("") # 버튼이 제목이랑 수평이 맞도록 살짝 내려주는 투명 공백
+        st.write("") 
         if st.button("🔄 기억 리셋", use_container_width=True):
-            # 버튼 누르면 수파베이스에서 파이 기록만 싹 날리고 로비로 쫓아냄!
             supabase.table("chat_memory").delete().eq("user_name", user_name).execute()
             st.session_state.clear()
             st.rerun()
             
     st.divider()
 
-    # 6. 기억력 복원 (수파베이스 DB 장부 읽어오기)
+    # 6. 기억력 복원
     if "chat_history" not in st.session_state:
         response = supabase.table("chat_memory").select("*").eq("user_name", user_name).order("id").execute()
         db_history = response.data
@@ -77,39 +76,40 @@ else:
         for row in db_history:
             st.session_state.chat_history.append((row["role"], row["message"]))
 
-        # 첫 접속이거나 리셋 직후면 츤데레 선톡 날리기!
         if not db_history:
             first_msg = f"뭐야, {user_name}. 왜 이렇게 늦었어?"
             st.session_state.chat_history.append(("assistant", first_msg))
             supabase.table("chat_memory").insert({"user_name": user_name, "role": "assistant", "message": first_msg}).execute()
 
-    # 7. 이전 대화 기록 화면에 예쁘게 띄워주기
     for role, text in st.session_state.chat_history:
         with st.chat_message(role, avatar="❄️" if role == "assistant" else None):
             st.markdown(text)
 
-    # 8. 실시간 채팅 및 DB 영구 저장 로직
+    # 8. 실시간 채팅 및 제미나이 강박증 치료 로직!
     if user_input := st.chat_input("겨울이에게 메시지 보내기"):
-        # 파이 채팅 출력 및 DB 저장
         with st.chat_message("user"):
             st.markdown(user_input)
         st.session_state.chat_history.append(("user", user_input))
         supabase.table("chat_memory").insert({"user_name": user_name, "role": "user", "message": user_input}).execute()
 
-        # 제미나이 뇌에 꽂아줄 과거 기억 세팅 (가장 최신 채팅은 제외하고 복사)
+        # 🚨 [핵심 버그 수정] 제미나이 뇌에 기억을 꽂을 때, '겨울이 선톡'은 쿨하게 빼버립니다!
+        history_for_gemini = st.session_state.chat_history[:-1]
+        
+        # 만약 기록의 맨 첫 번째가 AI(assistant)라면? 제미나이가 빡치기 전에 리스트에서 삭제!
+        if len(history_for_gemini) > 0 and history_for_gemini[0][0] == "assistant":
+            history_for_gemini = history_for_gemini[1:]
+
         gemini_history = []
-        for r, t in st.session_state.chat_history[:-1]: 
+        for r, t in history_for_gemini: 
             gemini_role = "model" if r == "assistant" else "user"
             gemini_history.append({"role": gemini_role, "parts": [{"text": t}]})
 
-        # 방금 막 생성된 쌩쌩한 1회용 엔진으로 대화 (Closed 에러 철벽 방어)
         temp_chat = client.chats.create(
             model="gemini-2.5-flash", 
             config={"system_instruction": winter_persona},
             history=gemini_history
         )
         
-        # 대답 생성 및 출력, DB 저장
         response = temp_chat.send_message(user_input)
         
         with st.chat_message("assistant", avatar="❄️"):
