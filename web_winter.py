@@ -20,9 +20,9 @@ supabase_url = st.secrets["SUPABASE_URL"]
 supabase_key = st.secrets["SUPABASE_KEY"]
 
 # 3. DB 접속 도구(Client) 만들기
-@st.cache_resource
-def init_supabase():
-    return create_client(supabase_url, supabase_key)
+# (에러의 원인이었던 @st.cache_resource 캐시 기능 과감하게 삭제!)
+supabase: Client = create_client(supabase_url, supabase_key)
+client = genai.Client(api_key=api_key)
 
 supabase: Client = init_supabase()
 client = genai.Client(api_key=api_key)
