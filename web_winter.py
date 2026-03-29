@@ -1,4 +1,3 @@
-import streamlit_authenticator as stauth
 import streamlit as st
 from google import genai
 from google.genai import types  # 🚨 [새로 추가된 핵심 부품!] 완벽한 규격을 위한 도구
