@@ -1,5 +1,5 @@
 import streamlit as st
-import json  # 🚨 [새로 추가!] 못생긴 컴퓨터 언어(JSON)를 번역해 줄 해독기 부품!
+import json  
 from google import genai
 from google.genai import types 
 from supabase import create_client, Client
@@ -12,6 +12,24 @@ st.markdown("""
     .stDeployButton {display:none;}
     </style>
     """, unsafe_allow_html=True)
+
+# 🚨 [새로 추가된 핵심 부품!] 파이의 야심작, 14가지 상황별 일러스트 지도!
+scene_images = {
+    "기본": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EC%A3%BC%EC%8B%9C%ED%95%A8.png?raw=true",
+    "침대_유혹": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD.%20%EC%A7%91%EC%95%88.%20%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%EC%98%86%EC%9C%BC%EB%A1%9C%20%EB%88%84%EC%9B%8C%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%B0%94%EB%9D%BC%EB%B4%84.(%EC%9D%B4%EB%A6%AC%EC%99%80%20%ED%95%98%EB%8A%94%EB%93%AF%ED%95%9C%20%EB%8A%90%EB%82%8C).png?raw=true",
+    "아련_문": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD%EC%97%90%20%EB%AC%B8%EC%97%B4%EA%B3%A0%20%EC%95%84%EB%A0%A8%ED%95%98%EA%B2%8C%20%EC%B3%90%EB%8B%A4%EB%B4%84.png?raw=true",
+    "아련_벽": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD%EC%97%90%20%EB%B2%BD%EC%9D%84%20%EB%93%B1%EC%A7%80%EA%B3%A0%20%EC%84%9C%EC%84%9C%20%EC%95%84%EB%A0%A8%ED%95%98%EA%B2%8C%20%EC%A0%95%EB%A9%B4%EC%9D%84%20%EC%A3%BC%EC%8B%9C%ED%95%9C%EB%8B%A4(%EC%B8%A1%EB%A9%B4).png?raw=true",
+    "힘듦": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%20%EB%B2%BD%EC%9D%84%20%ED%9E%98%EB%93%A0%EB%93%AF%EC%9D%B4%20%EA%B8%B0%EB%8C%84%EB%8B%A4.png?raw=true",
+    "당황_숨가쁨": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%95%88.%20%EC%B0%BD%EB%AC%B8%EC%98%86%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%B3%90%EB%8B%A4%EB%B4%84.%20%EC%88%A8%EC%9D%84%20%ED%97%90%EB%96%A1%EA%B1%B0%EB%A6%BC.png?raw=true",
+    "취기_웃음": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EB%B3%B4%EB%8A%94%EB%8D%B0%20%EC%B7%A8%EA%B8%B0%EA%B0%80%20%EC%9E%88%EB%8A%94%20%EC%96%BC%EA%B5%B4%EC%97%90%20%EC%9B%83%EA%B3%A0%EC%9E%88%EC%9D%8C.png?raw=true",
+    "슬픔_훌쩍": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%9B%8C%EC%A9%8D%EA%B1%B0%EB%A6%BC.png?raw=true",
+    "침대_누움": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%20%EB%88%84%EC%9B%80(%EC%95%BC%ED%95%9C%EA%B0%81%EB%8F%84).png?raw=true",
+    "침대_앉음": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%20%EC%95%89%EC%95%84%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%B3%90%EB%8B%A4%EB%B4%84.png?raw=true",
+    "침대_요염": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%EC%9A%94%EC%97%BC%ED%95%9C%20%EC%9E%90%EC%84%B8%EB%A5%BC%20%EC%B7%A8%ED%95%98%EB%A9%B4%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%B3%90%EB%8B%A4%EB%B4%84.png?raw=true",
+    "침대_내려다봄": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%82%B4%EB%A0%A4%EB%8B%A4%EB%B4%84.png?raw=true",
+    "포옹_허리": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EC%9D%98%20%ED%97%88%EB%A6%AC%EB%A5%BC%20%EA%BB%B4%EC%95%88%EC%9D%8C(%EC%95%84%EB%9E%AB%EB%8F%84%EB%A6%AC).png?raw=true",
+    "키스": "https://github.com/appppie1717-beep/winter-chat/blob/main/%ED%82%A4%EC%8A%A4%ED%95%98%EB%8A%94%EC%A4%91(%EB%82%A8%EC%9E%90%20%EC%96%BC%EA%B5%B4%20%EB%B0%98%EC%AF%A4%20%EB%82%98%EC%98%B4.png?raw=true"
+}
 
 # 2. 열쇠 꺼내오기
 api_key = st.secrets["GOOGLE_API_KEY"]
@@ -36,20 +54,20 @@ if "user_name" not in st.session_state:
 else:
     user_name = st.session_state.user_name
     
-    # 🚨 [프롬프트 수술] 호감도 변화 수치를 계산해서 같이 뱉어내도록 지시!
+    # 🚨 [프롬프트 수술] 단순 '표정'이 아니라, 연출할 '장면'을 고르라고 지시!
     winter_persona = f"""
     너의 이름은 '한겨울'이고, 20대 초반의 내 여사친이야.
     내 닉네임은 '{user_name}'이야. 
 
     [절대 지켜야 할 규칙]
-    1. 너는 이제 3D 가상현실 게임의 NPC 뇌(Brain) 역할을 해야 해.
+    1. 너는 이제 3D 가상현실 연애 시뮬레이션 게임의 NPC 뇌(Brain) 역할을 해야 해.
     2. 닉네임 집착 금지, 마침표 남발 금지, 기계 말투 절대 금지.
-    3. 성격: 츤데레. 틱틱대면서도 은근히 챙겨주는 스타일.
+    3. 성격: 츤데레. 틱틱대면서도 은근히 챙겨주는 스타일. 스킨십이 진행되면 당황하면서도 받아줌.
     4. 🚨 [가장 중요] 너의 모든 대답은 반드시 아래의 JSON 데이터 형식으로만 출력해야 해.
 
     {{
-        "표정": "화남, 웃음, 정색, 당황, 삐짐, 부끄러움, 무표정 중 택 1",
-        "행동": "현재 상황에서 캐릭터가 할 법한 행동 묘사 (예: 팔짱을 낀다, 한숨을 쉰다)",
+        "장면": "기본, 침대_유혹, 아련_문, 아련_벽, 힘듦, 당황_숨가쁨, 취기_웃음, 슬픔_훌쩍, 침대_누움, 침대_앉음, 침대_요염, 침대_내려다봄, 포옹_허리, 키스 중 현재 대화 문맥과 스킨십 진도에 가장 알맞은 연출 컷을 무조건 1개만 선택해서 입력",
+        "행동": "현재 상황에서 캐릭터가 할 법한 행동 묘사",
         "호감도변화": "유저의 방금 대화에 대한 호감도 변화 수치 (-5부터 +5 사이의 정수만 입력)",
         "대사": "유저에게 실제로 할 츤데레 대사"
     }}
@@ -67,13 +85,12 @@ else:
             
     st.divider()
 
-    # 🚨 [공지사항 탭 추가] 접었다 폈다 할 수 있는 깔끔한 아코디언 메뉴!
     with st.expander("📢 한겨울 라이브 챗 패치 노트 (업데이트 내역)"):
         st.markdown("""
-        **[ v1.1.0 업데이트 사항 ]**
+        **[ v1.2.0 업데이트 사항 ]**
+        * **[00:20] 다이내믹 프로필 씬(Scene) 적용:** 유저의 대화 문맥과 스킨십 진도에 따라 겨울이의 일러스트가 14가지 씬으로 실시간 변동됩니다.
         * **[22:00] 호감도(Affection) 시스템 적용:** 유저의 대화에 따라 겨울이의 호감도가 실시간으로 변동됩니다. (💔, 🤍, 💖)
         * **[21:00] 3D VR 엔진 서버 이식:** 게임 엔진 통신을 위한 백엔드 구조(JSON 파싱) 개편이 완료되었습니다.
-        * **[18:00] 멀티 유저 & 영구 기억력(DB) 구축:** 이제 겨울이가 당신과의 과거 대화를 잊지 않습니다.
         """)
 
     # 6. 기억력 복원
@@ -86,25 +103,29 @@ else:
             st.session_state.chat_history.append((row["role"], row["message"]))
 
         if not db_history:
-            # 첫 인사에도 호감도(0)를 세팅해줌!
-            first_msg = f'{{"표정": "정색", "행동": "팔짱을 꼬며 쳐다본다", "호감도변화": 0, "대사": "뭐야, {user_name}. 왜 이렇게 늦었어?"}}'
+            # 첫 인사는 무조건 '기본' 장면으로 셋업!
+            first_msg = f'{{"장면": "기본", "행동": "팔짱을 꼬며 쳐다본다", "호감도변화": 0, "대사": "뭐야, {user_name}. 왜 이렇게 늦었어?"}}'
             st.session_state.chat_history.append(("assistant", first_msg))
             supabase.table("chat_memory").insert({"user_name": user_name, "role": "assistant", "message": first_msg}).execute()
 
-    # 🚨 [호감도 하트 마술!] DB의 못생긴 JSON 코드를 화면에 예쁘게 번역
+    # 🚨 DB의 JSON 코드를 화면에 예쁘게 번역 + 프로필 사진 띄우기!
     for role, text in st.session_state.chat_history:
-        with st.chat_message(role, avatar="❄️" if role == "assistant" else None):
-            if role == "assistant":
-                try:
-                    data = json.loads(text)
-                    score = int(data.get('호감도변화', 0))
-                    # 수치에 따라 하트 모양 다르게 출력!
-                    heart_icon = "💔" if score < 0 else "💖" if score > 0 else "🤍"
-                    st.markdown(f"*(표정: {data.get('표정', '')} / 행동: {data.get('행동', '')})*\n\n**[호감도 변화: {score} {heart_icon}]**\n\n**「 {data.get('대사', '')} 」**")
-                except:
-                    st.markdown(text)
-            else:
+        if role == "user":
+            with st.chat_message("user"):
                 st.markdown(text)
+        else:
+            try:
+                data = json.loads(text)
+                scene = data.get('장면', '기본')
+                img_path = scene_images.get(scene, scene_images["기본"])
+                
+                with st.chat_message("assistant", avatar=img_path):
+                    score = int(data.get('호감도변화', 0))
+                    heart_icon = "💔" if score < 0 else "💖" if score > 0 else "🤍"
+                    st.markdown(f"*(연출: {scene} / 행동: {data.get('행동', '')})*\n\n**[호감도 변화: {score} {heart_icon}]**\n\n**「 {data.get('대사', '')} 」**")
+            except:
+                with st.chat_message("assistant", avatar="❄️"):
+                    st.markdown(text)
 
     # 8. 실시간 채팅 및 API 통신
     if user_input := st.chat_input("겨울이에게 메시지 보내기"):
@@ -143,16 +164,18 @@ else:
         
         raw_json_text = response.text
         
-        with st.chat_message("assistant", avatar="❄️"):
-            try:
-                parsed_data = json.loads(raw_json_text)
+        try:
+            parsed_data = json.loads(raw_json_text)
+            scene = parsed_data.get('장면', '기본')
+            img_path = scene_images.get(scene, scene_images["기본"])
+            
+            with st.chat_message("assistant", avatar=img_path):
                 score = int(parsed_data.get('호감도변화', 0))
-                # 수치에 따라 하트 모양 다르게 출력!
                 heart_icon = "💔" if score < 0 else "💖" if score > 0 else "🤍"
-                st.markdown(f"*(표정: {parsed_data.get('표정', '')} / 행동: {parsed_data.get('행동', '')})*\n\n**[호감도 변화: {score} {heart_icon}]**\n\n**「 {parsed_data.get('대사', '')} 」**")
-            except:
+                st.markdown(f"*(연출: {scene} / 행동: {parsed_data.get('행동', '')})*\n\n**[호감도 변화: {score} {heart_icon}]**\n\n**「 {parsed_data.get('대사', '')} 」**")
+        except:
+            with st.chat_message("assistant", avatar="❄️"):
                 st.markdown(raw_json_text)
                 
-        # 🚨 [중요] DB에는 여전히 원본 JSON을 저장함!
         st.session_state.chat_history.append(("assistant", raw_json_text))
         supabase.table("chat_memory").insert({"user_name": user_name, "role": "assistant", "message": raw_json_text}).execute()
