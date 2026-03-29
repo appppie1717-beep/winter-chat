@@ -13,7 +13,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 🚨 [이미지 지도] 네가 올린 실제 파일명으로 꼭 맞춰줘!
+# 🚨 14가지 상황별 일러스트 지도 (완벽 세팅 완료!)
 scene_images = {
     "기본": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EC%A3%BC%EC%8B%9C%ED%95%A8.png?raw=true",
     "침대_유혹": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD.%20%EC%A7%91%EC%95%88.%20%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%EC%98%86%EC%9C%BC%EB%A1%9C%20%EB%88%84%EC%9B%8C%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%B0%94%EB%9D%BC%EB%B4%84.(%EC%9D%B4%EB%A6%AC%EC%99%80%20%ED%95%98%EB%8A%94%EB%93%AF%ED%95%9C%20%EB%8A%90%EB%82%8C).png?raw=true",
@@ -53,7 +53,7 @@ if "user_name" not in st.session_state:
 else:
     user_name = st.session_state.user_name
     
-    # 🚨 [이스터에그 프롬프트 추가!] 절대 권력 치트키 장착!
+    # 🚨 [이스터에그 프롬프트 유지]
     winter_persona = f"""
     너의 이름은 '한겨울'이고, 20대 초반의 내 여사친이야.
     내 닉네임은 '{user_name}'이야. 
@@ -85,13 +85,28 @@ else:
             
     st.divider()
 
-    with st.expander("📢 한겨울 라이브 챗 패치 노트 (업데이트 내역)"):
-        st.markdown("""
-        **[ v1.4.0 모닝 업데이트 사항 ]**
-        * **[07:45] 로딩 애니메이션 추가:** 겨울이가 답장을 고민할 때 로딩 스피너가 표시됩니다.
-        * **[07:45] UI 개선:** 메시지 전송 시 팝업(Toast) 알림이 추가되었습니다.
-        * **[00:30] 대형 CG 패치:** 말풍선 내에 대형 일러스트가 큼직하게 출력됩니다!
-        """)
+    # 🚨 [새로 추가된 스크롤 게시판!] st.container(height=300)을 써서 긴 역사관 만들기!
+    with st.expander("📢 한겨울 라이브 챗 패치 노트 (업데이트 역사관)"):
+        with st.container(height=250):
+            st.markdown("""
+            **[ v1.4.0 ] 2026.03.30 (월)**
+            * **[07:45] 몰입도 UI 패치:** 겨울이가 답장을 고민할 때 로딩 애니메이션 추가 및 메시지 전송 팝업(Toast) 알림이 적용되었습니다.
+            * **[07:30] 시크릿 이스터에그:** 특정 히든 커맨드 입력 시 특수 씬이 발동됩니다. (창조주 파이 전용)
+            * **[00:30] 대형 CG 패치:** 말풍선 내에 대형 일러스트가 큼직하게 출력되도록 그래픽을 업그레이드했습니다.
+            * **[00:20] 다이내믹 프로필 씬(Scene) 적용:** 유저의 대화 문맥과 진도에 따라 겨울이의 일러스트가 14가지 씬으로 실시간 자동 변동됩니다.
+            
+            ---
+            **[ v1.2.0 ] 2026.03.29 (일)**
+            * **[22:00] 호감도(Affection) 시스템 적용:** 유저의 대화 선택지에 따라 겨울이의 호감도가 실시간으로 변동됩니다. (💔, 🤍, 💖)
+            
+            ---
+            **[ v1.1.0 ] 2026.03.29 (일)**
+            * **[21:00] 3D VR 엔진 서버 이식:** 게임 엔진 통신을 위한 백엔드 구조(JSON 파싱) 개편이 완료되었습니다.
+            
+            ---
+            **[ v1.0.0 ] 2026.03.29 (일)**
+            * **[18:00] 멀티 유저 & 영구 기억력(DB) 구축:** 수파베이스(Supabase) 연동 완료. 이제 겨울이가 당신과의 과거 대화를 영구적으로 기억합니다. 라이브 베타 테스트 시작!
+            """)
 
     if "chat_history" not in st.session_state:
         response = supabase.table("chat_memory").select("*").eq("user_name", user_name).order("id").execute()
@@ -126,7 +141,6 @@ else:
                     st.markdown(text)
 
     if user_input := st.chat_input("겨울이에게 메시지 보내기"):
-        # 🚨 [새로 추가!] 채팅을 치자마자 우측 하단에 예쁜 팝업 알림 등장!
         st.toast('겨울이가 당신의 메시지를 읽고 고민 중입니다...', icon='👀')
         
         with st.chat_message("user"):
@@ -153,7 +167,6 @@ else:
             role = "model" if r == "assistant" else "user"
             contents.append(types.Content(role=role, parts=[types.Part.from_text(text=t)]))
 
-        # 🚨 [새로 추가!] AI가 생각하는 동안 뱅글뱅글 도는 로딩 애니메이션 띄우기!
         with st.spinner('❄️ 겨울이가 답장을 썼다 지웠다 하고 있습니다...'):
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
@@ -171,17 +184,4 @@ else:
             scene = parsed_data.get('장면', '기본')
             img_path = scene_images.get(scene, scene_images["기본"])
             
-            with st.chat_message("assistant", avatar="❄️"):
-                st.image(img_path, width=350)
-                score = int(parsed_data.get('호감도변화', 0))
-                heart_icon = "💔" if score < 0 else "💖" if score > 0 else "🤍"
-                st.markdown(f"*(연출: {scene} / 행동: {parsed_data.get('행동', '')})*\n\n**[호감도 변화: {score} {heart_icon}]**\n\n**「 {parsed_data.get('대사', '')} 」**")
-        except:
-            with st.chat_message("assistant", avatar="❄️"):
-                st.markdown(raw_json_text)
-                
-        st.session_state.chat_history.append(("assistant", raw_json_text))
-        supabase.table("chat_memory").insert({"user_name": user_name, "role": "assistant", "message": raw_json_text}).execute()
-        
-        # 대답이 완료되면 화면을 깔끔하게 다시 고침!
-        st.rerun()
+            with st.chat_message("assistant",
