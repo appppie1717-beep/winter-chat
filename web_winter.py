@@ -20,12 +20,11 @@ supabase_url = st.secrets["SUPABASE_URL"]
 supabase_key = st.secrets["SUPABASE_KEY"]
 
 # 3. DB 접속 도구(Client) 만들기
-# (에러의 원인이었던 @st.cache_resource 캐시 기능 과감하게 삭제!)
+# (에러의 원인이었던 init_supabase 함수 호출과 캐시를 아예 영구 삭제함!)
+# 수파베이스와 제미나이 엔진을 헷갈리는 이름 없이 다이렉트로 바로 꽂아버립니다.
 supabase: Client = create_client(supabase_url, supabase_key)
 client = genai.Client(api_key=api_key)
 
-supabase: Client = init_supabase()
-client = genai.Client(api_key=api_key)
 
 # 4. 문지기 로직 (온보딩: 이름 물어보기)
 if "user_name" not in st.session_state:
