@@ -14,11 +14,10 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. 스트림릿 금고에서 열쇠 꺼내오기!
+# 2. 스트림릿 금고에서 열쇠 꺼내오기! (보안 완벽 유지)
 api_key = st.secrets["GOOGLE_API_KEY"]
-# URL만 금고에서 안 빼오고 직접 하드코딩으로 박아버림!! (따옴표 안에 직접 타건해 줘)
-supabase_url = "https://gwhewzzxhhmvjdulngx.supabase.co"
-supabase_key = st.secrets["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3aGV3d3p6eGhobXZqZHVsbmd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NTY3MDMsImV4cCI6MjA5MDMzMjcwM30.zRX5BxQeUi2-zDGwEO_tHoz5XvwZVUrtcvywdKRB_74"]
+supabase_url = st.secrets["SUPABASE_URL"]
+supabase_key = st.secrets["SUPABASE_KEY"]
 
 # 3. DB 접속 도구(Client) 만들기
 # (에러의 원인이었던 init_supabase 함수 호출과 캐시를 아예 영구 삭제함!)
