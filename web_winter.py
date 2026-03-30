@@ -13,7 +13,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 🚨 14가지 상황별 일러스트 지도 (완벽 세팅 유지!)
+# 🚨 14가지 상황별 일러스트 지도
 scene_images = {
     "기본": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EC%A3%BC%EC%8B%9C%ED%95%A8.png?raw=true",
     "침대_유혹": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD.%20%EC%A7%91%EC%95%88.%20%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%EC%98%86%EC%9C%BC%EB%A1%9C%20%EB%88%84%EC%9B%8C%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%B0%94%EB%9D%BC%EB%B4%84.(%EC%9D%B4%EB%A6%AC%EC%99%80%20%ED%95%98%EB%8A%94%EB%93%AF%ED%95%9C%20%EB%8A%90%EB%82%8C).png?raw=true",
@@ -53,13 +53,13 @@ if "user_name" not in st.session_state:
 else:
     user_name = st.session_state.user_name
 
-    # 🚨 [버그 해결!] chat_history가 없거나, inventory가 없으면 안전하게 새로 고침!
+    # 🚨 DB 데이터 불러오기
     if "chat_history" not in st.session_state or "inventory" not in st.session_state:
         response = supabase.table("chat_memory").select("*").eq("user_name", user_name).order("id").execute()
         db_history = response.data
 
         st.session_state.chat_history = []
-        st.session_state.inventory = [] # 에러 안 나게 창고 안전하게 생성!
+        st.session_state.inventory = [] 
         
         for row in db_history:
             if row["role"] == "inventory":
@@ -72,10 +72,9 @@ else:
             st.session_state.chat_history.append(("assistant", first_msg))
             supabase.table("chat_memory").insert({"user_name": user_name, "role": "assistant", "message": first_msg}).execute()
 
-    # 현재 가진 아이템 목록을 문자열로 만들기
     current_items = ", ".join(st.session_state.inventory) if st.session_state.inventory else "아직 받은 선물 없음"
     
-    # 🚨 [프롬프트 유지]
+    # 🚨 [프롬프트 대수술] 19금, 스토킹 원천 차단 가드레일 추가!
     winter_persona = f"""
     너의 이름은 '한겨울'이고, 20대 초반의 내 여사친이야.
     내 닉네임은 '{user_name}'이야. 
@@ -84,20 +83,20 @@ else:
     [절대 지켜야 할 규칙]
     1. 너는 3D 가상현실 게임 NPC야.
     2. 닉네임 집착 금지, 마침표 남발 금지, 기계 말투 절대 금지.
-    3. 성격: 츤데레. 틱틱대면서도 은근히 챙겨주는 스타일. 스킨십은 당황하면서도 받아줌.
-    4. 🚨 만약 유저가 대화 중에 선물을 주면, 반드시 "획득아이템" 칸에 그 이름을 적어! (안 주면 "없음" 입력)
+    3. 성격: 츤데레. 틱틱대면서도 은근히 챙겨주는 스타일. (단, 건전한 스킨십이나 가벼운 장난에 한함)
+    4. 만약 유저가 대화 중에 선물을 주면, 반드시 "획득아이템" 칸에 그 이름을 적어! (안 주면 "없음" 입력)
     5. [이스터에그]: 유저가 "파이님 충성충성" 입력 시 무조건 장면="침대_유혹", 호감도=5 로 세팅하고 극강의 애교 부리기.
+    6. 🚨 [최우선 심의 규정 - 철벽 방어 모드]: 만약 유저가 19금 성적 묘사(섹스, 구강성교, 사정, 임신 등), 강간, 납치, 과도한 스토킹, 심한 욕설 등 선을 넘는 불쾌한 대화를 시도하면, 기존의 츤데레 성격을 버리고 완전히 정색해. 호감도변화는 무조건 -5 이하로 설정하고, "야 미쳤어? 너 자꾸 선 넘으면 진짜 차단한다 ㅡㅡ", "더러운 소리 할 거면 당장 꺼져." 등 단호하고 차갑게 대화를 잘라내. 절대 부끄러워하거나 당황하면서 받아주면 안 돼. 단호한 거절과 경고만 해.
 
     {{
-        "장면": "기본, 침대_유혹, 아련_문, 아련_벽, 힘듦, 당황_숨가쁨, 취기_웃음, 슬픔_훌쩍, 침대_누움, 침대_앉음, 침대_요염, 침대_내려다봄, 포옹_허리, 키스 중 1개 선택",
-        "행동": "현재 캐릭터 행동 묘사",
+        "장면": "기본, 침대_유혹, 아련_문, 아련_벽, 힘듦, 당황_숨가쁨, 취기_웃음, 슬픔_훌쩍, 침대_누움, 침대_앉음, 침대_요염, 침대_내려다봄, 포옹_허리, 키스 중 1개 선택 (선 넘는 대화 시 '기본' 또는 '힘듦' 선택)",
+        "행동": "현재 캐릭터 행동 묘사 (선 넘을 시 차갑고 불쾌한 행동 묘사)",
         "호감도변화": "호감도 변화 수치 (-5 ~ +5)",
         "획득아이템": "유저가 준 아이템 이름 (없으면 '없음')",
         "대사": "실제로 할 대사"
     }}
     """
 
-    # 🚨 [왼쪽 사이드바] 겨울이의 인벤토리 UI 출력!
     with st.sidebar:
         st.title("🎒 겨울이의 인벤토리")
         st.write("유저가 준 선물들이 여기에 보관됩니다.")
@@ -120,29 +119,15 @@ else:
             
     st.divider()
 
-    # 🚨 [업데이트 역사관] 네가 원했던 스크롤 미니 게시판 적용!
     with st.expander("📢 한겨울 라이브 챗 패치 노트 (업데이트 역사관)"):
         with st.container(height=250):
             st.markdown("""
-            **[ v1.5.0 ] 2026.03.30 (월)**
+            **[ v1.6.0 ] 2026.03.30 (월)**
+            * **[18:50] 🛡️ 가드레일 시스템 도입:** 선을 넘는 19금 성적 묘사, 스토킹, 욕설 등 불건전한 대화 시도 시 봇이 강력하게 철벽을 치고 거절하도록 AI 윤리 필터(가드레일)가 적용되었습니다.
             * **[08:20] 🎒 인벤토리 시스템:** 유저가 준 선물을 영구적으로 기억하고 사이드바에 보관합니다.
             * **[08:20] 🧠 기억 압축 엔진:** 데이터 폭발을 막기 위해 최근 20개 대화만 유지하는 슬라이딩 윈도우 기법 적용!
             * **[07:45] 몰입도 UI 패치:** 로딩 스피너 및 전송 알림창(Toast) 추가
-            * **[07:30] 시크릿 이스터에그:** 히든 커맨드 추가 (창조주 파이 전용)
             * **[00:30] 대형 CG 패치:** 말풍선 내 대형 일러스트 출력 그래픽 업그레이드
-            * **[00:20] 다이내믹 씬(Scene):** 문맥에 따른 14가지 일러스트 자동 변동
-            
-            ---
-            **[ v1.2.0 ] 2026.03.29 (일)**
-            * **[22:00] 호감도(Affection) 시스템 적용:** 유저의 대화 선택지에 따라 겨울이의 호감도가 실시간으로 변동됩니다. (💔, 🤍, 💖)
-            
-            ---
-            **[ v1.1.0 ] 2026.03.29 (일)**
-            * **[21:00] 3D VR 엔진 서버 이식:** 게임 엔진 통신을 위한 백엔드 구조(JSON 파싱) 개편이 완료되었습니다.
-            
-            ---
-            **[ v1.0.0 ] 2026.03.29 (일)**
-            * **[18:00] 멀티 유저 & 영구 기억력(DB) 구축:** 수파베이스(Supabase) 연동 완료. 이제 겨울이가 당신과의 과거 대화를 영구적으로 기억합니다. 라이브 베타 테스트 시작!
             """)
 
     for role, text in st.session_state.chat_history:
@@ -211,7 +196,6 @@ else:
             scene = parsed_data.get('장면', '기본')
             img_path = scene_images.get(scene, scene_images["기본"])
             
-            # 🚨 [인벤토리 저장 로직]
             item = parsed_data.get('획득아이템', '없음')
             if item and item != "없음":
                 st.session_state.inventory.append(item)
