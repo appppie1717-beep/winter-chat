@@ -5,15 +5,84 @@ from google.genai import types
 from supabase import create_client, Client
 
 # 1. 페이지 설정
-st.set_page_config(page_title="한겨울 라이브 챗", page_icon="❄️")
+st.set_page_config(page_title="파이의 AI 멀티버스", page_icon="📱", layout="centered")
+
+# =====================================================================
+# 🎨 [디자인 정밀 광택 2.1] 상단 잘림 버그 해결 & 다크/라이트 모드 대응
+# =====================================================================
 st.markdown("""
     <style>
     footer {visibility: hidden;}
     .stDeployButton {display:none;}
+    
+    /* 📱 카톡 프로필 카드 */
+    .profile-card {
+        border: 1px solid var(--faded-text40);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 12px;
+        background-color: var(--secondary-background-color); 
+        color: var(--text-color); 
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .profile-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* 동그란 이모지 프로필 사진 */
+    .profile-img {
+        width: 60px;
+        height: 60px;
+        background-color: #f7e600; 
+        color: black; 
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        margin-right: 15px;
+    }
+    
+    /* 친구 이름 */
+    .profile-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: var(--text-color);
+        margin-bottom: 3px;
+    }
+    
+    /* 친구 설명 */
+    .profile-desc {
+        font-size: 13px;
+        color: var(--text-color);
+        opacity: 0.7; 
+        line-height: 1.2;
+    }
+
+    /* 대화하기 버튼 스타일 */
+    .stButton>button {
+        border-radius: 20px;
+        border: 1px solid #f7e600;
+        transition: all 0.2s;
+    }
+    .stButton>button:hover {
+        background-color: #f7e600;
+        color: black !important;
+        border: 1px solid #f7e600;
+    }
+    
+    .stTextInput>div>div>input, .stForm {
+        border-radius: 10px !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# 🚨 14가지 상황별 일러스트 지도 (본섭 하드코딩 주소로 교체 완료!)
+# 🚨 14가지 상황별 일러스트 지도
 scene_images = {
     "기본": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EC%A3%BC%EC%8B%9C%ED%95%A8.png?raw=true",
     "침대_유혹": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD.%20%EC%A7%91%EC%95%88.%20%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%EC%98%86%EC%9C%BC%EB%A1%9C%20%EB%88%84%EC%9B%8C%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%B0%94%EB%9D%BC%EB%B4%84.(%EC%9D%B4%EB%A6%AC%EC%99%80%20%ED%95%98%EB%8A%94%EB%93%AF%ED%95%9C%20%EB%8A%90%EB%82%8C).png?raw=true",
@@ -28,7 +97,7 @@ scene_images = {
     "침대_요염": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%EC%9A%94%EC%97%BC%ED%95%9C%20%EC%9E%90%EC%84%B8%EB%A5%BC%20%EC%B7%A8%ED%95%98%EB%A9%B4%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%B3%90%EB%8B%A4%EB%B4%84.png?raw=true",
     "침대_내려다봄": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%82%B4%EB%A0%A4%EB%8B%A4%EB%B4%84.png?raw=true",
     "포옹_허리": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EC%9D%98%20%ED%97%88%EB%A6%AC%EB%A5%BC%20%EA%BB%B4%EC%95%88%EC%9D%8C(%EC%95%84%EB%9E%AB%EB%8F%84%EB%A6%AC).png?raw=true",
-    "키스": "https://github.com/appppie1717-beep/winter-chat/blob/main/%ED%82%A4%EC%8A%A4%ED%95%98%EB%8A%94%EC%A4%91(%EB%82%A8%EC%9E%90%20%EC%96%BC%5C%EA%B5%B4%20%EB%B0%98%EC%AF%A4%20%EB%82%98%EC%98%B4.png?raw=true"
+    "키스": "https://github.com/appppie1717-beep/winter-chat/blob/main/%ED%82%A4%EC%8A%A4%ED%95%98%EB%8A%94%EC%A4%91(%EB%82%A8%EC%9E%90%20%EC%96%BC%EA%B5%B4%20%EB%B0%98%EC%AF%A4%20%EB%82%98%EC%98%B4.png?raw=true"
 }
 
 # 2. 열쇠 꺼내오기
@@ -39,25 +108,97 @@ supabase_key = st.secrets["SUPABASE_KEY"]
 supabase: Client = create_client(supabase_url, supabase_key)
 client = genai.Client(api_key=api_key)
 
-# 4. 문지기 로직
+# 🚪 페이지 라우터 초기화
+if "page" not in st.session_state:
+    st.session_state.page = "login"
 if "user_name" not in st.session_state:
-    st.title("❄️ 한겨울 라이브 챗 접속")
-    st.write("한겨울이 당신을 뭐라고 불러드릴까요?")
+    st.session_state.user_name = ""
+
+# =====================================================================
+# 🚪 1. 로그인 화면 (Login)
+# =====================================================================
+if st.session_state.page == "login":
+    st.title("❄️ AI 멀티 메신저")
+    st.write("접속할 닉네임을 입력해주세요.")
     with st.form(key='login_form'):
-        name_input = st.text_input("당신의 닉네임을 입력해주세요.")
+        name_input = st.text_input("닉네임", placeholder="예: 파이")
         submit_button = st.form_submit_button(label='대화 시작하기 ➡️')
+        
     if submit_button and name_input:
         st.session_state.user_name = name_input
+        st.session_state.page = "lobby"
         st.rerun()
 
-else:
+# =====================================================================
+# 📱 2. 카카오톡 로비 화면 (Lobby)
+# =====================================================================
+elif st.session_state.page == "lobby":
+    user_name = st.session_state.user_name
+    
+    col1, col2 = st.columns([8, 2])
+    with col1:
+        st.title("친구 목록 👥")
+    with col2:
+        st.write("") 
+        if st.button("🔴 로그아웃", use_container_width=True):
+            st.session_state.clear()
+            st.rerun()
+
+    st.write(f"반갑습니다, **{user_name}**님! 오늘 대화할 AI 친구를 선택하세요.")
+    st.divider()
+
+    # 📱 카드 1번: 한겨울
+    with st.container():
+        st.markdown('<div class="profile-card">', unsafe_allow_html=True)
+        col1, col2, col3 = st.columns([1, 4, 2])
+        with col1:
+            st.markdown('<div class="profile-img">❄️</div>', unsafe_allow_html=True)
+        with col2:
+            st.markdown(f'''
+                <div>
+                    <div class="profile-name">한겨울</div>
+                    <div class="profile-desc">까칠한 츤데레 여사친. 은근히 챙겨주는 스타일. <br>VR Test 진행 중!</div>
+                </div>
+            ''', unsafe_allow_html=True)
+        with col3:
+            if st.button("대화하기 💬", key="btn_winter", use_container_width=True):
+                st.session_state.page = "chat_winter"
+                st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # 📱 카드 2번: 임슬아
+    with st.container():
+        st.markdown('<div class="profile-card">', unsafe_allow_html=True)
+        col1, col2, col3 = st.columns([1, 4, 2])
+        with col1:
+            st.markdown('<div class="profile-img">🌸</div>', unsafe_allow_html=True)
+        with col2:
+            st.markdown(f'''
+                <div>
+                    <div class="profile-name">임슬아</div>
+                    <div class="profile-desc">[🚧 신규 추가] 아직 성격과 세계관이 부여되지 않았습니다.<br>조만간 업데이트됩니다!</div>
+                </div>
+            ''', unsafe_allow_html=True)
+        with col3:
+            if st.button("대화하기 💬", key="btn_seula", use_container_width=True):
+                st.toast("🚧 임슬아는 아직 개발 중입니다! 츤데레 겨울이랑 먼저 놀아주세요.", icon="🚧")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+
+# =====================================================================
+# ❄️ 3. 한겨울 채팅방 화면 (Chat - Winter)
+# =====================================================================
+elif st.session_state.page == "chat_winter":
     user_name = st.session_state.user_name
 
-    # 🚨 [만보기 생성] 대화 턴 수 측정용
+    # 🔙 상단 네비게이션: 뒤로 가기
+    if st.button("🔙 로비로 돌아가기"):
+        st.session_state.page = "lobby"
+        st.rerun()
+
     if "turn_count" not in st.session_state:
         st.session_state.turn_count = 0
 
-    # 🚨 DB 데이터 불러오기 (UI 최적화: 50개)
     if "chat_history" not in st.session_state or "inventory" not in st.session_state:
         response = supabase.table("chat_memory").select("*").eq("user_name", user_name).order("id", desc=True).limit(50).execute()
         db_history = reversed(response.data)
@@ -84,7 +225,6 @@ else:
     current_items = ", ".join(st.session_state.inventory) if st.session_state.inventory else "아직 받은 선물 없음"
     current_memory = st.session_state.core_memory if st.session_state.core_memory else "아직 특별한 기억이 없음."
     
-    # 🚨 [프롬프트] 19금 가드레일 + 핵심 기억 주입
     winter_persona = f"""
     너의 이름은 '한겨울'이고, 20대 초반의 내 여사친이야.
     내 닉네임은 '{user_name}'이야. 
@@ -118,7 +258,6 @@ else:
         else:
             st.info("아직 텅 비어있습니다.")
             
-        # 🔓 [봉인 해제] 모든 유저에게 겨울이의 뇌(Core Memory) 실시간 모니터링 개방!
         if st.session_state.core_memory:
             st.divider()
             st.write("🧠 **겨울이의 일기장 (우리의 추억)**")
@@ -127,21 +266,46 @@ else:
 
     col1, col2 = st.columns([7, 3])
     with col1:
-        st.title(f"❄️ {user_name} & 한겨울 (VR Test)")
+        st.title(f"❄️ {user_name} & 한겨울")
     with col2:
         st.write("") 
-        if st.button("🔄 기억 리셋", use_container_width=True):
-            supabase.table("chat_memory").delete().eq("user_name", user_name).execute()
-            st.session_state.clear()
-            st.rerun()
+        # 🚨 [NEW] 실수 방지용 팝업 리셋 버튼 적용!
+        with st.popover("🔄 방 기억 리셋", use_container_width=True):
+            st.warning("⚠️ 리셋하면 다시 복구할 수 없습니다.\n\n정말 모든 기억을 지우시겠습니까?")
+            if st.button("✅ 네, 영구 삭제합니다", use_container_width=True):
+                supabase.table("chat_memory").delete().eq("user_name", user_name).execute()
+                st.session_state.pop("chat_history", None)
+                st.session_state.pop("inventory", None)
+                st.session_state.pop("core_memory", None)
+                st.rerun()
             
     st.divider()
 
     with st.expander("📢 한겨울 라이브 챗 패치 노트 (업데이트 역사관)"):
         with st.container(height=250):
             st.markdown("""
+            **[ v2.1.3 ] 2026.03.30 (월)**
+            * **[21:30] 🛡️ 기억 리셋 안전장치(팝업) 추가:** 실수로 '방 기억 리셋' 버튼을 눌러 소중한 추억이 날아가는 것을 방지하기 위해, 한 번 더 확인하는 경고 팝업창을 적용했습니다.
+
+            ---
+            **[ v2.1.2 ] 2026.03.30 (월)**
+            * **[21:30] 🛠️ UI 잘림 버그 및 역사관 복구:** 상단 레이아웃이 잘려서 안 보이던 현상(여백 버그)을 완벽하게 해결하고, 삭제되었던 초창기 업데이트 역사관을 100% 복원했습니다!
+
+            ---
+            **[ v2.1.1 ] 2026.03.30 (월)**
+            * **[21:25] 🎨 카톡 UI 다크모드 버그 수정:** 유저 기기 설정(다크/라이트 모드)에 맞춰 프로필 카드 색상과 글씨색이 자동으로 적응하도록 디자인을 최적화했습니다. 이제 글씨가 안 보이는 현상이 없습니다!
+
+            ---
+            **[ v2.1.0 ] 2026.03.30 (월)**
+            * **[21:15] 📱 멀티버스 로비 UI 전면 개편:** 카카오톡 친구 목록처럼 둥글고 깔끔한 프로필 카드로 로비 화면을 예쁘게 단장했습니다.
+            
+            ---
+            **[ v2.0.0 ] 2026.03.30 (월)**
+            * **[21:10] 🌐 멀티 캐릭터 시스템 도입:** 로비 화면이 추가되어, 접속 후 대화할 AI 상대(한겨울, 임슬아 등)를 선택할 수 있는 멀티버스 아키텍처로 진화했습니다!
+            
+            ---
             **[ v1.8.2 ] 2026.03.30 (월)**
-            * **[20:10] 🔓 추억 요약본 전면 개방:** 기존에 관리자만 볼 수 있었던 '장기 기억 요약(Core Memory)' 화면을 모든 유저에게 개방했습니다! 왼쪽 메뉴에서 겨울이가 당신을 어떻게 기억하고 있는지 실시간으로 확인해 보세요!
+            * **[20:10] 🔓 추억 요약본 전면 개방:** 관리자만 볼 수 있었던 '장기 기억 요약(Core Memory)' 화면을 모든 유저에게 개방했습니다! 왼쪽 메뉴에서 겨울이가 당신을 어떻게 기억하고 있는지 실시간으로 확인해 보세요!
             
             ---
             **[ v1.8.1 ] 2026.03.30 (월)**
@@ -273,10 +437,8 @@ else:
         st.session_state.chat_history.append(("assistant", raw_json_text))
         supabase.table("chat_memory").insert({"user_name": user_name, "role": "assistant", "message": raw_json_text}).execute()
         
-        # 🚨 정확한 카운터(만보기)를 이용한 자동 요약 발동!
         st.session_state.turn_count += 1
         
-        # 유저와 겨울이가 딱 10번 주고받으면 실행!
         if st.session_state.turn_count >= 10: 
             with st.spinner("❄️ 겨울이가 당신과의 기억을 정리하고 있습니다..."):
                 history_text = ""
@@ -297,13 +459,11 @@ else:
                     contents=summary_prompt,
                 )
                 
-                # DB 업데이트
                 supabase.table("chat_memory").delete().eq("user_name", user_name).eq("role", "core_memory").execute()
                 supabase.table("chat_memory").insert({"user_name": user_name, "role": "core_memory", "message": summary_response.text}).execute()
                 st.session_state.core_memory = summary_response.text
                 st.toast("🧠 겨울이의 장기 기억력이 업데이트되었습니다!", icon="✨")
                 
-            # 만보기 초기화! 다음 10번 대화 후 다시 실행되게 만듦.
             st.session_state.turn_count = 0
 
         st.rerun()
