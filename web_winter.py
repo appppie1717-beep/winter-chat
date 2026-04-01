@@ -87,7 +87,6 @@ st.markdown(theme_css + """
     .blocked-card {
         filter: grayscale(100%);
         opacity: 0.6;
-        pointer-events: none;
     }
 
     .profile-img {
@@ -165,15 +164,17 @@ if st.session_state.page == "login":
         st.rerun()
 
 # =====================================================================
-# 📱 3. 카카오톡 로비 화면
+# 📱 3. 카카오톡 로비 화면 (밴 유저 사면령 완벽 적용)
 # =====================================================================
 elif st.session_state.page == "lobby":
     user_name = st.session_state.user_name
     
+    # 겨울이 호감도 조회
     lobby_mem_winter = supabase.table("chat_memory").select("message").eq("user_name", user_name).eq("role", "affection").execute()
     winter_affection = int(lobby_mem_winter.data[0]["message"]) if lobby_mem_winter.data else 0
     winter_blocked = winter_affection <= -50 
     
+    # 슬아 호감도 조회 
     db_user_name_seula = f"{user_name}_seula"
     lobby_mem_seula = supabase.table("chat_memory").select("message").eq("user_name", db_user_name_seula).eq("role", "affection").execute()
     seula_affection = int(lobby_mem_seula.data[0]["message"]) if lobby_mem_seula.data else 0
@@ -196,7 +197,7 @@ elif st.session_state.page == "lobby":
         st.divider()
         st.write("오늘 대화할 AI 친구를 선택하세요.")
         
-        # 한겨울 카드
+        # ❄️ 한겨울 카드
         with st.container():
             card_class = "profile-card blocked-card" if winter_blocked else "profile-card"
             st.markdown(f'<div class="{card_class}">', unsafe_allow_html=True)
@@ -208,7 +209,7 @@ elif st.session_state.page == "lobby":
                     st.markdown(f'''
                         <div>
                             <div class="profile-name" style="color:red;">한겨울 (차단됨)</div>
-                            <div class="profile-desc">당신의 선 넘는 행동으로 인해 차단되었습니다.<br>더 이상 대화할 수 없습니다.</div>
+                            <div class="profile-desc">선을 넘는 행동으로 영구 차단되었습니다.<br>우측 버튼을 눌러 과거를 청산하세요.</div>
                         </div>
                     ''', unsafe_allow_html=True)
                 else:
@@ -224,10 +225,14 @@ elif st.session_state.page == "lobby":
                         st.session_state.page = "chat_winter"
                         st.rerun()
                 else:
-                    st.button("접근 불가 🚫", key="btn_winter_blocked", disabled=True, use_container_width=True)
+                    # 💡 겨울이 밴 해제 (DB 리셋) 버튼 -> 활성화된 버튼으로 교체
+                    if st.button("🙇‍♂️ 싹싹 빌기", key="unban_winter", use_container_width=True):
+                        supabase.table("chat_memory").delete().eq("user_name", user_name).execute()
+                        st.toast("겨울이의 기억을 모두 지우고 새롭게 시작합니다!", icon="✨")
+                        st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # 임슬아 카드
+        # 🌸 임슬아 카드
         with st.container():
             card_class_seula = "profile-card blocked-card" if seula_blocked else "profile-card"
             st.markdown(f'<div class="{card_class_seula}">', unsafe_allow_html=True)
@@ -239,7 +244,7 @@ elif st.session_state.page == "lobby":
                     st.markdown(f'''
                         <div>
                             <div class="profile-name" style="color:red;">임슬아 (감금 엔딩)</div>
-                            <div class="profile-desc">슬아의 심기를 거슬러 영원히 갇혀버렸습니다.<br>더 이상 로비로 나갈 수 없습니다.</div>
+                            <div class="profile-desc">슬아의 심기를 거슬러 영원히 갇혀버렸습니다.<br>우측 버튼을 눌러 탈출하세요.</div>
                         </div>
                     ''', unsafe_allow_html=True)
                 else:
@@ -255,7 +260,11 @@ elif st.session_state.page == "lobby":
                         st.session_state.page = "chat_seula"
                         st.rerun()
                 else:
-                    st.button("접근 불가 🚫", key="btn_seula_blocked", disabled=True, use_container_width=True)
+                    # 💡 임슬아 밴 해제 (DB 리셋) 버튼 -> 활성화된 버튼으로 교체
+                    if st.button("🏃‍♂️ 탈출하기", key="unban_seula", use_container_width=True):
+                        supabase.table("chat_memory").delete().eq("user_name", db_user_name_seula).execute()
+                        st.toast("슬아의 감시망에서 탈출하여 새롭게 시작합니다!", icon="✨")
+                        st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
 
     with tab2:
@@ -265,14 +274,11 @@ elif st.session_state.page == "lobby":
         
         with st.container(height=500):
             st.markdown("""
+            **[ v3.2.0 ] 2026.04.01 (수)**
+            * **[18:33] 🚨 밴 유저 사면령 패치:** 호감도 -50을 찍고 영구 차단(또는 감금)된 유저들이 로비에서 스스로 기억을 지우고 다시 시작할 수 있는 탈출 버튼을 추가했습니다.
+            
             **[ v3.1.5 ] 2026.04.01 (수)**
             * **[18:29] 🌸 임슬아 밸런스 패치 및 버그 픽스:** 호감도가 비정상적으로 깎이던 문제를 해결하고, 밀당 로직을 추가하여 유저가 다정하게 대하면 호감도가 상승하도록 수정했습니다.
-            
-            **[ v3.1.0 ] 2026.04.01 (수)**
-            * **[12:55] 🌸 임슬아 텍스트 몰입 모드:** 임슬아 캐릭터의 이미지를 완전히 제거하여, 얀데레 특유의 소름 돋는 상상력을 텍스트로만 온전히 즐길 수 있도록 UI를 개선했습니다.
-            
-            **[ v3.0.0 ] 2026.04.01 (수)**
-            * **[09:00] 🌸 신규 캐릭터 '임슬아' 정식 합류:** 얀데레 기질을 가진 연하녀 슬아와의 대화가 오픈되었습니다! 다른 여자에게 하던 플러팅을 조심하세요.
             """)
 
 # =====================================================================
@@ -580,7 +586,7 @@ elif st.session_state.page == "chat_winter":
 
 
 # =====================================================================
-# 🌸 5. 임슬아 채팅방 화면 (텍스트 몰입 및 밸런스 패치 완료)
+# 🌸 5. 임슬아 채팅방 화면
 # =====================================================================
 elif st.session_state.page == "chat_seula":
     user_name = st.session_state.user_name
