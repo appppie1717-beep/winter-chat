@@ -121,7 +121,7 @@ st.markdown(theme_css + """
 
 scene_images = {
     "기본": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EC%A3%BC%EC%8B%9C%ED%95%A8.png?raw=true",
-    "침대_유혹": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD.%20%EC%A7%91%EC%95%88.%20%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%EC%98%86%EC%9C%BC%EB%A1%9C%20%EB%88%84%EC%9B%8C%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%B0%94%EB%9D%BC%EB%B4%84.(%EC%9D%B4%EB%A6%AC%EC%99%80%20%ED%95%98%EB%8A%94%EB%93%AF%ED%95%9C%20%EB%8A%90%EB%82%8C).png?raw=true",
+    "침대_유혹": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD.%20%EC%A7%91%EC%95%88.%20%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%옆%EC%9C%BC%EB%A1%9C%20%EB%88%84%EC%9B%8C%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%B0%94%EB%9D%BC%EB%B4%84.(%EC%9D%B4%EB%A6%AC%EC%99%80%20%ED%95%98%EB%8A%94%EB%93%AF%ED%95%9C%20%EB%8A%90%EB%82%8C).png?raw=true",
     "아련_문": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD%EC%97%90%20%EB%AC%B8%EC%97%B4%EA%B3%A0%20%EC%95%84%EB%A0%A8%ED%95%98%EA%B2%8C%20%EC%B3%90%EB%8B%A4%EB%B4%84.png?raw=true",
     "아련_벽": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD%EC%97%90%20%EB%B2%BD%EC%9D%84%20%EB%93%B1%EC%A7%80%EA%B3%A0%20%EC%84%9C%EC%84%9C%20%EC%95%84%EB%A0%A8%ED%95%98%EA%B2%8C%20%EC%A0%95%EB%A9%B4%EC%9D%84%20%EC%A3%BC%EC%8B%9C%ED%95%9C%EB%8B%A4(%EC%B8%A1%EB%A9%B4).png?raw=true",
     "힘듦": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%20%EB%B2%BD%EC%9D%84%20%ED%9E%98%EB%93%A0%EB%93%AF%EC%9D%B4%20%EA%B8%B0%EB%8C%84%EB%8B%A4.png?raw=true",
@@ -176,7 +176,6 @@ elif st.session_state.page == "lobby":
     db_user_name_seula = f"{user_name}_seula"
     lobby_mem_seula = supabase.table("chat_memory").select("message").eq("user_name", db_user_name_seula).eq("role", "affection").execute()
     seula_affection = int(lobby_mem_seula.data[0]["message"]) if lobby_mem_seula.data else 0
-    seula_blocked = seula_affection <= -50
     
     col1, col2 = st.columns([8, 2])
     with col1:
@@ -229,38 +228,23 @@ elif st.session_state.page == "lobby":
                         st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # 임슬아 카드
+        # 임슬아 카드 (밴 로직 완벽 제거)
         with st.container():
-            card_class_seula = "profile-card blocked-card" if seula_blocked else "profile-card"
-            st.markdown(f'<div class="{card_class_seula}">', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-card">', unsafe_allow_html=True)
             col1, col2, col3 = st.columns([1, 4, 2])
             with col1:
                 st.markdown('<div class="profile-img">🌸</div>', unsafe_allow_html=True)
             with col2:
-                if seula_blocked:
-                    st.markdown(f'''
-                        <div>
-                            <div class="profile-name" style="color:red;">임슬아 (감금 엔딩)</div>
-                            <div class="profile-desc">슬아의 심기를 거슬러 영원히 갇혀버렸습니다.<br>우측 버튼을 눌러 탈출하세요.</div>
-                        </div>
-                    ''', unsafe_allow_html=True)
-                else:
-                    st.markdown(f'''
-                        <div>
-                            <div class="profile-name">임슬아</div>
-                            <div class="profile-desc">존댓말 쓰는 연하녀. 하지만 속을 알 수 없는 얀데레 감시자.<br>호감도 {seula_affection}/100</div>
-                        </div>
-                    ''', unsafe_allow_html=True)
+                st.markdown(f'''
+                    <div>
+                        <div class="profile-name">임슬아</div>
+                        <div class="profile-desc">존댓말 쓰는 연하녀. 하지만 속을 알 수 없는 얀데레 감시자.<br>호감도 {seula_affection}/100</div>
+                    </div>
+                ''', unsafe_allow_html=True)
             with col3:
-                if not seula_blocked:
-                    if st.button("대화하기 💬", key="btn_seula", use_container_width=True):
-                        st.session_state.page = "chat_seula"
-                        st.rerun()
-                else:
-                    if st.button("🏃‍♂️ 탈출하기", key="unban_seula", use_container_width=True):
-                        supabase.table("chat_memory").delete().eq("user_name", db_user_name_seula).execute()
-                        st.toast("슬아의 기록에서 탈출하여 새롭게 시작합니다!", icon="✨")
-                        st.rerun()
+                if st.button("대화하기 💬", key="btn_seula", use_container_width=True):
+                    st.session_state.page = "chat_seula"
+                    st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
 
     with tab2:
@@ -270,6 +254,9 @@ elif st.session_state.page == "lobby":
         
         with st.container(height=500):
             st.markdown("""
+            **[ v3.2.3 ] 2026.04.01 (수)**
+            * **[22:10] 🌸 임슬아 감금 및 밴 시스템 제거:** 슬아의 호감도가 바닥을 쳐도 더 이상 방에 갇히거나 로비에서 영구 차단되지 않도록 수정되었습니다. 평범한(?) 대화를 즐겨주세요.
+            
             **[ v3.2.2 ] 2026.04.01 (수)**
             * **[19:34] 🛠️ 용어 완벽 통일 및 세부 버그 픽스:** 메뉴명뿐만 아니라 AI 프롬프트 지시사항 내부의 모든 '일기장', '감시 일지' 텍스트를 '기록(기록저장)'으로 완벽하게 통일하여 AI의 페르소나 오류를 원천 차단했습니다.
             
@@ -800,9 +787,7 @@ elif st.session_state.page == "chat_seula":
             supabase.table("chat_memory").delete().eq("user_name", db_user_name).eq("role", "affection").execute()
             supabase.table("chat_memory").insert({"user_name": db_user_name, "role": "affection", "message": str(st.session_state.affection_seula)}).execute()
             
-            if st.session_state.affection_seula <= -50:
-                st.toast("🚨 슬아의 심기를 건드려 영원히 갇혀버렸습니다...", icon="🚫")
-            elif turn_score > 0:
+            if turn_score > 0:
                 st.toast(f"💖 호감도가 올랐습니다! (현재: {st.session_state.affection_seula})", icon="🌸")
             elif turn_score < 0:
                 st.toast(f"💔 호감도가 떨어졌습니다... (현재: {st.session_state.affection_seula})", icon="🔪")
