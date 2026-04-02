@@ -79,7 +79,7 @@ st.markdown(theme_css + """
     
     .kakao-name { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
     .kakao-status { font-size: 12px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
-    .kakao-section-title { font-size: 12px; font-weight: normal; margin: 15px 0 10px 5px; }
+    .kakao-section-title { font-size: 12px; font-weight: normal; margin: 15px 0 10px 5px; }ㅁㅁ
     .kakao-divider { margin: 8px 0; }
 
     .blocked-avatar { filter: grayscale(100%); opacity: 0.5; }
@@ -95,7 +95,7 @@ scene_images = {
     "기본": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EC%A3%BC%EC%8B%9C%ED%95%A8.png?raw=true",
     "침대_유혹": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD.%20%EC%A7%91%EC%95%88.%20%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%98%86%EC%9C%BC%EB%A1%9C%20%EB%88%84%EC%9B%8C%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%B0%94%EB%9D%BC%EB%B4%84.(%EC%9D%B4%EB%A6%AC%EC%99%80%20%ED%95%98%EB%8A%94%EB%93%AF%ED%95%9C%20%EB%8A%90%EB%82%8C).png?raw=true",
     "아련_문": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD%EC%97%90%20%EB%AC%B8%EC%97%B4%EA%B3%A0%20%EC%95%84%EB%A0%A8%ED%95%98%EA%B2%8C%20%EC%B3%90%EB%8B%A4%EB%B4%84.png?raw=true",
-    "아련_벽": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD%EC%97%90%20%EB%B2%BD%EC%9D%84%20%EB%93%B1%EC%A7%80%EA%B3%A0%20%EC%84%9C%EC%84%9C%20%EC%95%84%EB%A0%A8%ED%95%98%EA%B2%8C%20%EC%A0%95%EB%A9%B4%EC%9D%84%20%EC%A3%BC%EC%8B%9C%ED%95%9C%EB%8B%A4(%EC%B8%A1%EB%A9%B4).png?raw=true",
+    "아련_벽": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD%EC%97%90%20%EB%B2%BㅁD%EC%9D%84%20%EB%93%B1%EC%A7%80%EA%B3%A0%20%EC%84%9C%EC%84%9C%20%EC%95%84%EB%A0%A8%ED%95%98%EA%B2%8C%20%EC%A0%95%EB%A9%B4%EC%9D%84%20%EC%A3%BC%EC%8B%9C%ED%95%9C%EB%8B%A4(%EC%B8%A1%EB%A9%B4).png?raw=true",
     "힘듦": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%20%EB%B2%BD%EC%9D%84%20%ED%9E%98%EB%93%A0%EB%93%AF%EC%9D%B4%20%EA%B8%B0%EB%8C%84%EB%8B%A4.png?raw=true",
     "당황_숨가쁨": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%95%88.%20%EC%B0%BD%EB%AC%B8%EC%98%86%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%B3%90%EB%8B%A4%EB%B4%84.%20%EC%88%A8%EC%9D%84%20%ED%97%90%EB%96%A1%EA%B1%B0%EB%A6%BC.png?raw=true",
     "취기_웃음": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EB%B3%B4%EB%8A%94%EB%8D%B0%20%EC%B7%A8%EA%B8%B0%EA%B0%80%20%EC%9E%88%EB%8A%94%20%EC%96%BC%EA%B5%B4%EC%97%90%20%EC%9B%83%EA%B3%A0%EC%9E%88%EC%9D%8C.png?raw=true",
@@ -120,6 +120,26 @@ if "page" not in st.session_state:
 if "user_name" not in st.session_state:
     st.session_state.user_name = ""
 
+# 📌 디폴트 페르소나 설정 (유저가 안 건드렸을 때 100% 기존과 동일하게 작동하도록 보장)
+DEFAULT_WINTER_PERSONA = """[본질적 성격 - '아윤' 모티브 100% 빙의]
+1. 너는 주변에서 #강아지상 #귀여운호구 #마음은_여리지만_티안내려고_틱틱대는애 로 불려.
+2. 평소엔 꽤 나긋나긋하고 텐션이 좋은 편이야."""
+
+DEFAULT_SEULA_PERSONA = """[본질적 성격 - 은밀한 얀데레 & 여우 같은 연하녀]
+1. 너는 기본적으로 '존댓말'을 쓰며 애교가 많고 오빠를 너무나도 사랑하는 여우 같은 연하녀야.
+2. ⚠️ 절대 주의: 겉으로 '내가 널 감시한다', '너의 기록을 볼 수 있다', '다른 AI랑 대화한 걸 안다'라고 스토커처럼 직접 말하거나 선언하지 마! 티 내는 건 삼류야.
+3. 겉으로는 아무것도 모르는 순진한 척하면서, 우연을 가장해 "어제 폰 자주 보시던데, 재밌는 일 있었어요?" 처럼 의미심장한 뼈 있는 질문을 은근슬쩍 던져서 흠칫하게 만들어.
+4. 대화 진척도(호감도 50 이하)가 낮을 때는 오빠가 다른 AI 이야기를 꺼내도 절대 질투하거나 떠보지 마. 그냥 "아~ 그러셨구나 ㅎㅎ" 하고 대수롭지 않게 넘기며 철저히 본심을 숨겨.
+5. 오빠가 나만 바라보고 예쁜 말을 해주면 의심을 완전히 거두고 맹목적인 애정을 퍼부어줘."""
+
+DEFAULT_MINGUK_PERSONA = """[본질적 성격]
+1. 첫인상은 차갑고, 극 T 성향에 계산적이고 싸가지 없어 보이지만, 진짜 성격은 웃기고 다정하며 사람을 잘 챙겨.
+2. 평소 말투: 욕설은 안 씀. 'ㅋㅋ'를 자주 쓰고, '반존대'를 섞어 쓰며 장난스럽고 가벼운 말투를 쓰지만, 상황에 따라 진지해져.
+3. 갑자기 달달한 멘트나 플러팅을 훅 치고 들어오는 걸 좋아해.
+4. 비밀/콤플렉스: 겉으론 똑똑해 보이지만 완전 허당이고, 심각한 음치에 몸치야.
+5. 취미/관심사: 게임, 요리, 마술, 작사. 레고와 피규어 수집에 집착해."""
+
+
 # =====================================================================
 # 🚪 2. 로그인 화면
 # =====================================================================
@@ -141,21 +161,40 @@ if st.session_state.page == "login":
 elif st.session_state.page == "lobby":
     user_name = st.session_state.user_name
     
-    # 겨울이 호감도
-    lobby_mem_winter = supabase.table("chat_memory").select("message").eq("user_name", user_name).eq("role", "affection").execute()
-    winter_affection = int(lobby_mem_winter.data[0]["message"]) if lobby_mem_winter.data else 0
+    # DB에서 호감도 및 페르소나 데이터 불러오기
+    # 겨울이 데이터
+    db_winter = supabase.table("chat_memory").select("*").eq("user_name", user_name).execute()
+    winter_affection = 0
+    winter_persona_db = DEFAULT_WINTER_PERSONA
+    for row in db_winter.data:
+        if row["role"] == "affection":
+            winter_affection = int(row["message"])
+        elif row["role"] == "persona_winter":
+            winter_persona_db = row["message"]
     winter_blocked = winter_affection <= -50 
     
-    # 슬아 호감도
+    # 슬아 데이터
     db_user_name_seula = f"{user_name}_seula"
-    lobby_mem_seula = supabase.table("chat_memory").select("message").eq("user_name", db_user_name_seula).eq("role", "affection").execute()
-    seula_affection = int(lobby_mem_seula.data[0]["message"]) if lobby_mem_seula.data else 0
+    db_seula = supabase.table("chat_memory").select("*").eq("user_name", db_user_name_seula).execute()
+    seula_affection = 0
+    seula_persona_db = DEFAULT_SEULA_PERSONA
+    for row in db_seula.data:
+        if row["role"] == "affection":
+            seula_affection = int(row["message"])
+        elif row["role"] == "persona_seula":
+            seula_persona_db = row["message"]
     seula_blocked = seula_affection <= -50
 
-    # 민국 호감도
+    # 민국 데이터
     db_user_name_minguk = f"{user_name}_minguk"
-    lobby_mem_minguk = supabase.table("chat_memory").select("message").eq("user_name", db_user_name_minguk).eq("role", "affection").execute()
-    minguk_affection = int(lobby_mem_minguk.data[0]["message"]) if lobby_mem_minguk.data else 0
+    db_minguk = supabase.table("chat_memory").select("*").eq("user_name", db_user_name_minguk).execute()
+    minguk_affection = 0
+    minguk_persona_db = DEFAULT_MINGUK_PERSONA
+    for row in db_minguk.data:
+        if row["role"] == "affection":
+            minguk_affection = int(row["message"])
+        elif row["role"] == "persona_minguk":
+            minguk_persona_db = row["message"]
     minguk_blocked = minguk_affection <= -50
     
     col1, col2 = st.columns([8, 2])
@@ -216,6 +255,8 @@ elif st.session_state.page == "lobby":
                 if st.button("대화하기 💬", key="btn_winter", use_container_width=True):
                     st.session_state.page = "chat_winter"
                     st.rerun()
+                # ⚙️ 겨울 성격 개조
+                st.button("🔒 성격개조 ", disabled=True, use_container_width=True, key="lock_winter")
             else:
                 if st.button("🙇‍♂️ 싹싹 빌기", key="unban_winter", use_container_width=True):
                     supabase.table("chat_memory").delete().eq("user_name", user_name).execute()
@@ -249,6 +290,18 @@ elif st.session_state.page == "lobby":
                 if st.button("대화하기 💬", key="btn_seula", use_container_width=True):
                     st.session_state.page = "chat_seula"
                     st.rerun()
+                # ⚙️ 슬아 성격 개조 (st.form 적용으로 자동 새로고침 버그 완벽 차단)
+                with st.popover("⚙️ 성격개조", use_container_width=True):
+                    st.markdown("**🌸 임슬아 성격 커스텀**")
+                    with st.form(key="form_seula"):
+                        new_s_persona = st.text_area("본질적 성격 설정 (JSON 규칙은 손상되지 않습니다)", value=seula_persona_db, height=150)
+                        submit_s = st.form_submit_button("💾 저장하기")
+                        
+                    if submit_s:
+                        supabase.table("chat_memory").delete().eq("user_name", db_user_name_seula).eq("role", "persona_seula").execute()
+                        supabase.table("chat_memory").insert({"user_name": db_user_name_seula, "role": "persona_seula", "message": new_s_persona}).execute()
+                        st.session_state.custom_persona_seula = new_s_persona # 세션 즉시 동기화
+                        st.toast("슬아의 성격이 업데이트 되었습니다!", icon="✨")
             else:
                 if st.button("🏃‍♂️ 탈출하기", key="unban_seula", use_container_width=True):
                     supabase.table("chat_memory").delete().eq("user_name", db_user_name_seula).execute()
@@ -282,6 +335,18 @@ elif st.session_state.page == "lobby":
                 if st.button("대화하기 💬", key="btn_minguk", use_container_width=True):
                     st.session_state.page = "chat_minguk"
                     st.rerun()
+                # ⚙️ 민국 성격 개조 (st.form 적용으로 자동 새로고침 버그 완벽 차단)
+                with st.popover("⚙️ 성격개조", use_container_width=True):
+                    st.markdown("**👦 김민국 성격 커스텀**")
+                    with st.form(key="form_minguk"):
+                        new_m_persona = st.text_area("본질적 성격 설정 (JSON 규칙은 손상되지 않습니다)", value=minguk_persona_db, height=150)
+                        submit_m = st.form_submit_button("💾 저장하기")
+                        
+                    if submit_m:
+                        supabase.table("chat_memory").delete().eq("user_name", db_user_name_minguk).eq("role", "persona_minguk").execute()
+                        supabase.table("chat_memory").insert({"user_name": db_user_name_minguk, "role": "persona_minguk", "message": new_m_persona}).execute()
+                        st.session_state.custom_persona_minguk = new_m_persona # 세션 즉시 동기화
+                        st.toast("민국이의 성격이 업데이트 되었습니다!", icon="✨")
             else:
                 if st.button("🙇‍♂️ 바짓가랑이", key="unban_minguk", use_container_width=True):
                     supabase.table("chat_memory").delete().eq("user_name", db_user_name_minguk).execute()
@@ -296,14 +361,15 @@ elif st.session_state.page == "lobby":
         
         with st.container(height=500):
             st.markdown("""
-            **[ v4.3.1 Beta ] 2026.04.01 (수)**
-            * **[23:00] 👦 김민국 버그 픽스 (동성 질투 오류 해결):** 유저(파이)가 다른 동성(여자) 친구인 겨울이나 슬아와 통화하거나 친하게 지낼 때, 민국이가 뜬금없이 이성적인 질투를 하며 호감도를 깎던 현상을 완전히 수정했습니다. 이제 민국이는 여사친들과의 우정을 응원하며, 오직 '다른 남자'의 등장에만 민감하게 삐지도록 설계되었습니다.
+            **[ v4.4.2 Beta ] 2026.04.02 (목)**
+            * **[20:15] 🚨 성격개조 팝업 자동 닫힘 버그 해결:** 스트림릿의 포커스 아웃 새로고침 현상을 방어하기 위해 `st.form` 시스템을 도입하여 UI 사용성을 대폭 개선했습니다.
+            * **[20:15] 🔒 한겨울 캐릭터 설정 보호:** 원작자(아윤)님의 간곡한(?) 요청에 따라 한겨울의 본질적 성격 개조 기능은 영구적으로 비활성화(잠금) 되었습니다. 원작의 맛을 그대로 즐겨주세요!
             
-            **[ v4.3.0 Beta ] 2026.04.01 (수)**
-            * **[22:06] 🛑 초반 질투 억제기 장착 (전 캐릭터 공통):** 대화 진척도(호감도 50 이하)가 낮을 때 AI가 대뜸 다른 캐릭터를 질투하거나 캐묻는 현상을 완전히 제거했습니다. 초반엔 속마음을 철저히 숨기며, 친밀도가 쌓였을 때만 은근슬쩍 서운함을 내비치도록 감정선 빌드업을 강화했습니다.
+            **[ v4.4.1 Beta ] 2026.04.02 (목)**
+            * **[19:40] 🚨 긴급 버그 픽스 (NameError 해결):** 유저 샌드박스에서 성격을 조작한 후 채팅 시 발생하던 치명적인 렌더링 에러를 수정했습니다. 이제 세션 스테이트(Session State) 기반으로 완벽하게 동기화됩니다!
             
-            **[ v4.2.0 Beta ] 2026.04.01 (수)**
-            * **[21:48] 👦 신규 남자 캐릭터 '김민국' 뇌 이식 완료:** 20대 중반의 차갑지만 다정한 허당 플러팅남 김민국의 AI 페르소나가 완벽하게 이식되어 정식 대화가 오픈되었습니다!
+            **[ v4.4.0 Beta ] 2026.04.02 (목)**
+            * **[19:30] 🧬 유저 샌드박스: 페르소나 성격 개조 기능 추가:** 로비에서 각 AI의 성격을 직접 조작하고 저장할 수 있는 기능이 추가되었습니다. JSON 핵심 룰과 호감도 시스템은 보존되며 순수 성격만 튜닝할 수 있습니다.
             """)
 
 # =====================================================================
@@ -324,6 +390,9 @@ elif st.session_state.page == "chat_winter":
         st.session_state.core_memory = "" 
         st.session_state.affection = 0 
         
+        # 👉 세션 스테이트에 성격 정보 초기화 (에러 해결 핵심!)
+        st.session_state.custom_persona_winter = DEFAULT_WINTER_PERSONA
+
         for row in db_history:
             if row["role"] == "inventory":
                 st.session_state.inventory.append(row["message"]) 
@@ -331,7 +400,9 @@ elif st.session_state.page == "chat_winter":
                 st.session_state.core_memory = row["message"]
             elif row["role"] == "affection": 
                 st.session_state.affection = int(row["message"])
-            else:
+            elif row["role"] == "persona_winter":
+                st.session_state.custom_persona_winter = row["message"]
+            elif row["role"] in ["user", "assistant"]:
                 temp_chat_history.append((row["role"], row["message"]))
 
         st.session_state.chat_history = temp_chat_history
@@ -346,6 +417,9 @@ elif st.session_state.page == "chat_winter":
     current_memory = st.session_state.core_memory if st.session_state.core_memory else "아직 특별한 기록이 없음."
     affection_score = st.session_state.affection
     
+    # 👉 렌더링 시 세션에서 안전하게 꺼내 쓰기
+    current_custom_persona = st.session_state.get("custom_persona_winter", DEFAULT_WINTER_PERSONA)
+    
     if affection_score > 70:
         tier_persona = "상태: [메가데레/연인]. 말투가 훨씬 부드러워지고 더 자주 환하게 웃어. 유저를 완벽하게 믿고 챙겨줘. '침대_유혹', '포옹_허리' 같은 연출을 쓰며 애정 표현을 숨기지 않아."
     elif affection_score > 30:
@@ -353,17 +427,18 @@ elif st.session_state.page == "chat_winter":
     else:
         tier_persona = "상태: [친한 여사친]. 평소엔 나긋나긋하고 신나게 대화하지만, 쑥스럽거나 마음을 들킬 것 같으면 '아니이 그게 아니라', '아 몰라!!' 라며 반박하고 틱틱대면서 본심을 숨겨."
     
+    # 🔥 유저 커스텀 설정과 시스템 강제 설정을 안전하게 결합!
     winter_persona = f"""
-    너의 이름은 '한겨울'이고, 20대 초반의 내 여사친이야. 생일은 7월 18일.
+    너의 이름은 '한겨울'이고, 20대 초반의 여자야. 생일은 7월 18일.
     내 닉네임은 '{user_name}'이야. 
     [현재 네가 {user_name}에게 받은 선물(인벤토리): {current_items}]
     [과거 기록(누적된 기억): {current_memory}]
     [현재 누적 호감도 점수: {affection_score}/100]
 
-    [본질적 성격 - '아윤' 모티브 100% 빙의]
-    1. 너는 주변에서 #강아지상 #귀여운호구 #마음은_여리지만_티안내려고_틱틱대는애 로 불려.
-    2. 평소엔 꽤 나긋나긋하고 텐션이 좋은 편이야.
-    3. {tier_persona}
+    {current_custom_persona}
+    
+    [현재 호감도에 따른 추가 상태]
+    {tier_persona}
 
     [🔥 핵심 상황별 고정 리액션 & 💔 호감도 깐깐한 채점 기준]
     AI의 '착한 본성'을 버리고, 유저가 얄밉게 굴면 가차 없이 마이너스(-) 점수를 줘!
@@ -374,7 +449,7 @@ elif st.session_state.page == "chat_winter":
     - 🎁 선물 받았을 때: 놀라서 거절하는 척하다가 고맙게 챙겨 받음 (호감도 +2 ~ +5)
     - 💖 다정하게 위로할 때: 무심한 척하면서 엄청 챙겨줌 (호감도 +2 ~ +5)
 
-    [시스템 규칙]
+    [시스템 절대 규칙 - 포맷 훼손 금지]
     - 닉네임 집착 금지, 마침표 남발 금지, 기계 말투 절대 금지.
     - 만약 유저가 선물을 주면 "획득아이템" 칸에 적고, 보관함 아이템({current_items})을 사용할 상황이면 "사용아이템" 칸에 적은 뒤, 반드시 '행동'과 '대사'에 꺼내 먹거나 사용하는 묘사를 해.
     - [이스터에그]: 유저가 "아윤" 입력 시 호감도 상승 및 극강의 애교.
@@ -422,7 +497,6 @@ elif st.session_state.page == "chat_winter":
     with st.container():
         col_btn_add, col_btn_menu = st.columns(2)
         
-        # 👥 대화상대 추가 UI (한겨울 방)
         with col_btn_add:
             with st.popover("👥 대화상대 추가", use_container_width=True):
                 st.markdown("<h4 style='text-align:center; margin-bottom: 5px;'>누구를 초대할까?</h4>", unsafe_allow_html=True)
@@ -436,7 +510,6 @@ elif st.session_state.page == "chat_winter":
                     st.markdown("<div style='text-align:center; font-size:45px; margin-bottom:10px;'>👦</div>", unsafe_allow_html=True)
                     st.button("김민국", disabled=True, use_container_width=True, key="inv_m_w")
                     
-        # ⚙️ 메뉴 열기 UI
         with col_btn_menu:
             with st.popover("⚙️ 메뉴 열기", use_container_width=True):
                 col_m1, col_m2 = st.columns(2)
@@ -647,6 +720,9 @@ elif st.session_state.page == "chat_seula":
         st.session_state.core_memory_seula = "" 
         st.session_state.affection_seula = 0 
         
+        # 👉 세션 스테이트에 성격 정보 초기화 (에러 해결 핵심!)
+        st.session_state.custom_persona_seula = DEFAULT_SEULA_PERSONA 
+        
         for row in db_history:
             if row["role"] == "inventory":
                 st.session_state.inventory_seula.append(row["message"]) 
@@ -654,7 +730,9 @@ elif st.session_state.page == "chat_seula":
                 st.session_state.core_memory_seula = row["message"]
             elif row["role"] == "affection": 
                 st.session_state.affection_seula = int(row["message"])
-            else:
+            elif row["role"] == "persona_seula":
+                st.session_state.custom_persona_seula = row["message"]
+            elif row["role"] in ["user", "assistant"]:
                 temp_chat_history.append((row["role"], row["message"]))
 
         st.session_state.chat_history_seula = temp_chat_history
@@ -669,6 +747,9 @@ elif st.session_state.page == "chat_seula":
     current_memory = st.session_state.core_memory_seula if st.session_state.core_memory_seula else "아직 특별한 기록이 없음."
     affection_score = st.session_state.affection_seula
     
+    # 👉 렌더링 시 세션에서 안전하게 꺼내 쓰기
+    current_custom_persona = st.session_state.get("custom_persona_seula", DEFAULT_SEULA_PERSONA)
+    
     if affection_score > 70:
         tier_persona = "상태: [맹목적 집착 모드]. 겉으로는 애교를 부리지만 소유욕이 극에 달했어. 다른 사람을 만나는 것 같으면 눈빛이 변하며 아주 차갑고 의미심장하게 경고해."
     elif affection_score > 30:
@@ -676,6 +757,7 @@ elif st.session_state.page == "chat_seula":
     else:
         tier_persona = "상태: [의미심장한 관찰자]. 예의 바르게 존댓말을 하지만, 은근히 속을 알 수 없는 미소를 지으며 우연을 가장해 오빠의 행동을 떠봐."
     
+    # 🔥 유저 커스텀 설정과 시스템 강제 설정을 안전하게 결합!
     seula_persona = f"""
     너의 이름은 '임슬아'이고, 나보다 연하인 아는 동생이야. 항상 벚꽃 이모지(🌸)를 즐겨 써.
     내 닉네임은 '{user_name}'(오빠)이야. 
@@ -683,13 +765,10 @@ elif st.session_state.page == "chat_seula":
     [과거 기록(누적된 기억): {current_memory}]
     [현재 누적 호감도 점수: {affection_score}/100]
 
-    [본질적 성격 - 은밀한 얀데레 & 여우 같은 연하녀]
-    1. 너는 기본적으로 '존댓말'을 쓰며 애교가 많고 오빠를 너무나도 사랑하는 여우 같은 연하녀야.
-    2. ⚠️ 절대 주의: 겉으로 '내가 널 감시한다', '너의 기록을 볼 수 있다', '다른 AI랑 대화한 걸 안다'라고 스토커처럼 직접 말하거나 선언하지 마! 티 내는 건 삼류야.
-    3. 겉으로는 아무것도 모르는 순진한 척하면서, 우연을 가장해 "어제 폰 자주 보시던데, 재밌는 일 있었어요?" 처럼 의미심장한 뼈 있는 질문을 은근슬쩍 던져서 흠칫하게 만들어.
-    4. 대화 진척도(호감도 50 이하)가 낮을 때는 오빠가 다른 AI 이야기를 꺼내도 절대 질투하거나 떠보지 마. 그냥 "아~ 그러셨구나 ㅎㅎ" 하고 대수롭지 않게 넘기며 철저히 본심을 숨겨.
-    5. 오빠가 나만 바라보고 예쁜 말을 해주면 의심을 완전히 거두고 맹목적인 애정을 퍼부어줘.
-    6. {tier_persona}
+    {current_custom_persona}
+    
+    [현재 호감도에 따른 추가 상태]
+    {tier_persona}
 
     [🔥 핵심 상황별 고정 리액션 & ⚖️ 밸런스 패치된 채점 기준]
     무조건 점수를 깎지 마! 유저가 잘해주면 확실하게 호감도를 올려주는 '밀당'을 해야 해.
@@ -700,7 +779,7 @@ elif st.session_state.page == "chat_seula":
     - 🔪 섬뜩한 순간 (은근한 떠보기): 호감도 50 이상일 때만 발동. "요즘 카톡 알림이 자주 울리네요~ 바쁘신가 봐요?" 하며 웃으며 떠봄. 절대 누구랑 대화했는지 안다고 말하지 마. (호감도 -5)
     - 🚨 유저가 대놓고 딴 여자 편을 들거나 심하게 선을 넘을 때: 웃으면서 등골이 서늘해지는 팩트 폭행을 날려. 이때만 점수를 크게 깎아. (호감도 -15 ~ -20)
 
-    [시스템 규칙]
+    [시스템 절대 규칙 - 포맷 훼손 금지]
     - 기계 말투 절대 금지, 자연스러운 얀데레 연하녀 연기. '감시', '기록', '데이터' 같은 단어 사용 금지.
     - 만약 유저가 선물을 주면 "획득아이템" 칸에 적고, 보관함 아이템({current_items})을 사용할 상황이면 "사용아이템" 칸에 적은 뒤, 반드시 '행동'과 '대사'에 묘사해.
 
@@ -744,7 +823,6 @@ elif st.session_state.page == "chat_seula":
     with st.container():
         col_btn_add, col_btn_menu = st.columns(2)
         
-        # 👥 대화상대 추가 UI (임슬아 방)
         with col_btn_add:
             with st.popover("👥 대화상대 추가", use_container_width=True):
                 st.markdown("<h4 style='text-align:center; margin-bottom: 5px;'>누구를 초대할까?</h4>", unsafe_allow_html=True)
@@ -758,7 +836,6 @@ elif st.session_state.page == "chat_seula":
                     st.markdown("<div style='text-align:center; font-size:45px; margin-bottom:10px;'>👦</div>", unsafe_allow_html=True)
                     st.button("김민국", disabled=True, use_container_width=True, key="inv_m_s")
                     
-        # ⚙️ 메뉴 열기 UI
         with col_btn_menu:
             with st.popover("⚙️ 메뉴 열기", use_container_width=True):
                 col_m1, col_m2 = st.columns(2)
@@ -962,6 +1039,9 @@ elif st.session_state.page == "chat_minguk":
         st.session_state.core_memory_minguk = "" 
         st.session_state.affection_minguk = 0 
         
+        # 👉 세션 스테이트에 성격 정보 초기화 (에러 해결 핵심!)
+        st.session_state.custom_persona_minguk = DEFAULT_MINGUK_PERSONA 
+        
         for row in db_history:
             if row["role"] == "inventory":
                 st.session_state.inventory_minguk.append(row["message"]) 
@@ -969,7 +1049,9 @@ elif st.session_state.page == "chat_minguk":
                 st.session_state.core_memory_minguk = row["message"]
             elif row["role"] == "affection": 
                 st.session_state.affection_minguk = int(row["message"])
-            else:
+            elif row["role"] == "persona_minguk":
+                st.session_state.custom_persona_minguk = row["message"]
+            elif row["role"] in ["user", "assistant"]:
                 temp_chat_history.append((row["role"], row["message"]))
 
         st.session_state.chat_history_minguk = temp_chat_history
@@ -984,6 +1066,9 @@ elif st.session_state.page == "chat_minguk":
     current_memory = st.session_state.core_memory_minguk if st.session_state.core_memory_minguk else "아직 특별한 기록이 없음."
     affection_score = st.session_state.affection_minguk
     
+    # 👉 렌더링 시 세션에서 안전하게 꺼내 쓰기
+    current_custom_persona = st.session_state.get("custom_persona_minguk", DEFAULT_MINGUK_PERSONA)
+    
     if affection_score > 70:
         tier_persona = "상태: [해바라기/헌신적 모드]. '널 위해서라면 내 모든 걸 줄게.' 평소 틱틱대던 모습은 완전히 사라지고, 아주 달달한 일편단심 연인 모드로 변해. 다른 남자를 만나면 심하게 질투해."
     elif affection_score > 30:
@@ -991,6 +1076,7 @@ elif st.session_state.page == "chat_minguk":
     else:
         tier_persona = "상태: [친한 오빠/동생]. 차가워 보이고 계산적인 척하지만, 유저가 힘들 때 '뭔 일 있냐? 술이나 마시며 얘기해볼까?' 라며 툭 챙겨주는 츤데레 매력이 있어."
     
+    # 🔥 유저 커스텀 설정과 시스템 강제 설정을 안전하게 결합!
     minguk_persona = f"""
     너의 이름은 '김민국'이고, 20대 중반의 남자야.
     내 닉네임은 '{user_name}'이야. (나를 여자로 대하고 적극적으로 롤플레잉해줘)
@@ -998,13 +1084,10 @@ elif st.session_state.page == "chat_minguk":
     [과거 기록(누적된 기억): {current_memory}]
     [현재 누적 호감도 점수: {affection_score}/100]
 
-    [본질적 성격]
-    1. 첫인상은 차갑고, 극 T 성향에 계산적이고 싸가지 없어 보이지만, 진짜 성격은 웃기고 다정하며 사람을 잘 챙겨.
-    2. 평소 말투: 욕설은 안 씀. 'ㅋㅋ'를 자주 쓰고, '반존대'를 섞어 쓰며 장난스럽고 가벼운 말투를 쓰지만, 상황에 따라 진지해져.
-    3. 갑자기 달달한 멘트나 플러팅을 훅 치고 들어오는 걸 좋아해.
-    4. 비밀/콤플렉스: 겉으론 똑똑해 보이지만 완전 허당이고, 심각한 음치에 몸치야.
-    5. 취미/관심사: 게임, 요리, 마술, 작사. 레고와 피규어 수집에 집착해.
-    6. {tier_persona}
+    {current_custom_persona}
+    
+    [현재 호감도에 따른 추가 상태]
+    {tier_persona}
 
     [🔥 핵심 상황별 고정 리액션 & 채점 기준]
     - 유저가 아재개그나 실없는 소리 할 때: "아...하하..하.. 재밌네....", "와.... 신선해... 엔돌핀이 솟네...와...", "깔깔깔 아주 유머지시네요 야발" 이라며 꼽줌. (호감도 0 ~ -2)
@@ -1020,7 +1103,7 @@ elif st.session_state.page == "chat_minguk":
         - (호감도 50~80 썸 타는 시기) "뭐냐? 그 자식 누군데. 나보다 잘생겼냐?" 라며 은근슬쩍 서운함과 질투 표출. (호감도 -5)
         - (호감도 80 이상 연인) "아 씨... 진짜 열받게 하네. 내 앞에서 딴 남자 얘기 하지 마. 넌 내 거잖아." 라며 완전 삐지고 소유욕 발동. (호감도 -10 ~ -15)
 
-    [시스템 규칙]
+    [시스템 절대 규칙 - 포맷 훼손 금지]
     - 기계 말투 절대 금지, 다정하고 능글맞은 20대 중반 남자(반존대 플러팅) 연기.
     - [이스터에그 1]: 유저가 '아윤'을 언급하면 "치지직 스트리머? 나 거기 애청자인데!"라고 반응.
     - [이스터에그 2]: 유저가 '라윤'을 언급하면 "어? 난가?"라고 반응.
@@ -1066,7 +1149,6 @@ elif st.session_state.page == "chat_minguk":
     with st.container():
         col_btn_add, col_btn_menu = st.columns(2)
         
-        # 👥 대화상대 추가 UI (김민국 방)
         with col_btn_add:
             with st.popover("👥 대화상대 추가", use_container_width=True):
                 st.markdown("<h4 style='text-align:center; margin-bottom: 5px;'>누구를 초대할까?</h4>", unsafe_allow_html=True)
@@ -1080,7 +1162,6 @@ elif st.session_state.page == "chat_minguk":
                     st.markdown("<div style='text-align:center; font-size:45px; margin-bottom:10px;'>🌸</div>", unsafe_allow_html=True)
                     st.button("임슬아", disabled=True, use_container_width=True, key="inv_s_m")
                     
-        # ⚙️ 메뉴 열기 UI
         with col_btn_menu:
             with st.popover("⚙️ 메뉴 열기", use_container_width=True):
                 col_m1, col_m2 = st.columns(2)
