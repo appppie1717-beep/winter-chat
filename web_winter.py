@@ -93,21 +93,22 @@ st.markdown(theme_css + """
     </style>
     """, unsafe_allow_html=True)
 
+# 🔥 파이 패치: 이미지 깨짐 방지 완벽 해결 (raw 주소로 교체!)
 scene_images = {
-    "기본": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EC%A3%BC%EC%8B%9C%ED%95%A8.png?raw=true",
-    "침대_유혹": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD.%20%EC%A7%91%EC%95%88.%20%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%98%86%EC%9C%BC%EB%A1%9C%20%EB%88%84%EC%9B%8C%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%B0%94%EB%9D%BC%EB%B4%84.(%EC%9D%B4%EB%A6%AC%EC%99%80%20%ED%95%98%EB%8A%94%EB%93%AF%ED%95%9C%20%EB%8A%90%EB%82%8C).png?raw=true",
-    "아련_문": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD%EC%97%90%20%EB%AC%B8%EC%97%B4%EA%B3%A0%20%EC%95%84%EB%A0%A8%ED%95%98%EA%B2%8C%20%EC%B3%90%EB%8B%A4%EB%B4%84.png?raw=true",
-    "아련_벽": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%83%88%EB%B2%BD%EC%97%90%20%EB%B2%BㅁD%EC%9D%84%20%EB%93%B1%EC%A7%80%EA%B3%A0%20%EC%84%9C%EC%84%9C%20%EC%95%84%EB%A0%A8%ED%95%98%EA%B2%8C%20%EC%A0%95%EB%A9%B4%EC%9D%84%20%EC%A3%BC%EC%8B%9C%ED%95%9C%EB%8B%A4(%EC%B8%A1%EB%A9%B4).png?raw=true",
-    "힘듦": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%20%EB%B2%BD%EC%9D%84%20%ED%9E%98%EB%93%A0%EB%93%AF%EC%9D%B4%20%EA%B8%B0%EB%8C%84%EB%8B%A4.png?raw=true",
-    "당황_숨가쁨": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%95%88.%20%EC%B0%BD%EB%AC%B8%EC%98%86%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%B3%90%EB%8B%A4%EB%B4%84.%20%EC%88%A8%EC%9D%84%20%ED%97%90%EB%96%A1%EA%B1%B0%EB%A6%BC.png?raw=true",
-    "취기_웃음": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EB%B3%B4%EB%8A%94%EB%8D%B0%20%EC%B7%A8%EA%B8%B0%EA%B0%80%20%EC%9E%88%EB%8A%94%20%EC%96%BC%EA%B5%B4%EC%97%90%20%EC%9B%83%EA%B3%A0%EC%9E%88%EC%9D%8C.png?raw=true",
-    "슬픔_훌쩍": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%9B%8C%EC%A9%8D%EA%B1%B0%EB%A6%BC.png?raw=true",
-    "침대_누움": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%20%EB%88%84%EC%9B%80(%EC%95%BC%ED%95%9C%EA%B0%81%EB%8F%84).png?raw=true",
-    "침대_앉음": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%20%EC%95%89%EC%95%84%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%B3%90%EB%8B%A4%EB%B4%84.png?raw=true",
-    "침대_요염": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%EC%9A%94%EC%97%BC%ED%95%9C%20%EC%9E%90%EC%84%B8%EB%A5%BC%20%EC%B7%A8%ED%95%98%EB%A9%B4%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%B3%90%EB%8B%A4%EB%B4%84.png?raw=true",
-    "침대_내려다봄": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%82%B4%EB%A0%A4%EB%8B%A4%EB%B4%84.png?raw=true",
-    "포옹_허리": "https://github.com/appppie1717-beep/winter-chat/blob/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EC%9D%98%20%ED%97%88%EB%A6%AC%EB%A5%BC%20%EA%BB%B4%EC%95%88%EC%9D%8C(%EC%95%84%EB%9E%AB%EB%8F%84%EB%A6%AC).png?raw=true",
-    "키스": "https://github.com/appppie1717-beep/winter-chat/blob/main/%ED%82%A4%EC%8A%A4%ED%95%98%EB%8A%94%EC%A4%91(%EB%82%A8%EC%9E%90%20%EC%96%BC%EA%B5%B4%20%EB%B0%98%EC%AF%A4%20%EB%82%98%EC%98%B4.png?raw=true"
+    "기본": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EC%A3%BC%EC%8B%9C%ED%95%A8.png",
+    "침대_유혹": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%83%88%EB%B2%BD.%20%EC%A7%91%EC%95%88.%20%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%98%86%EC%9C%BC%EB%A1%9C%20%EB%88%84%EC%9B%8C%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%B0%94%EB%9D%BC%EB%B4%84.(%EC%9D%B4%EB%A6%AC%EC%99%80%20%ED%95%98%EB%8A%94%EB%93%AF%ED%95%9C%20%EB%8A%90%EB%82%8C).png",
+    "아련_문": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%83%88%EB%B2%BD%EC%97%90%20%EB%AC%B8%EC%97%B4%EA%B3%A0%20%EC%95%84%EB%A0%A8%ED%95%98%EA%B2%8C%20%EC%B3%90%EB%8B%A4%EB%B4%84.png",
+    "아련_벽": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%83%88%EB%B2%BD%EC%97%90%20%EB%B2%BㅁD%EC%9D%84%20%EB%93%B1%EC%A7%80%EA%B3%A0%20%EC%84%9C%EC%84%9C%20%EC%95%84%EB%A0%A8%ED%95%98%EA%B2%8C%20%EC%A0%95%EB%A9%B4%EC%9D%84%20%EC%A3%BC%EC%8B%9C%ED%95%9C%EB%8B%A4(%EC%B8%A1%EB%A9%B4).png",
+    "힘듦": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%A7%91%20%EB%B2%BD%EC%9D%84%20%ED%9E%98%EB%93%A0%EB%93%AF%EC%9D%B4%20%EA%B8%B0%EB%8C%84%EB%8B%A4.png",
+    "당황_숨가쁨": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%A7%91%EC%95%88.%20%EC%B0%BD%EB%AC%B8%EC%98%86%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%B3%90%EB%8B%A4%EB%B4%84.%20%EC%88%A8%EC%9D%84%20%ED%97%90%EB%96%A1%EA%B1%B0%EB%A6%BC.png",
+    "취기_웃음": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%A0%95%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EB%B3%B4%EB%8A%94%EB%8D%B0%20%EC%B7%A8%EA%B8%B0%EA%B0%80%20%EC%9E%88%EB%8A%94%20%EC%96%BC%EA%B5%B4%EC%97%90%20%EC%9B%83%EA%B3%A0%EC%9E%88%EC%9D%8C.png",
+    "슬픔_훌쩍": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%A7%91%EC%97%90%EC%84%9C%20%ED%9B%8C%EC%A9%8D%EA%B1%B0%EB%A6%BC.png",
+    "침대_누움": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%B9%A8%EB%8C%80%EC%97%90%20%EB%88%84%EC%9B%80(%EC%95%BC%ED%95%9C%EA%B0%81%EB%8F%84).png",
+    "침대_앉음": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%B9%A8%EB%8C%80%EC%97%90%20%EC%95%89%EC%95%84%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%B3%90%EB%8B%A4%EB%B4%84.png",
+    "침대_요염": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%EC%9A%94%EC%97%BC%ED%95%9C%20%EC%9E%90%EC%84%B8%EB%A5%BC%20%EC%B7%A8%ED%95%98%EB%A9%B4%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EC%B3%90%EB%8B%A4%EB%B4%84.png",
+    "침대_내려다봄": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EB%A5%BC%20%EB%82%B4%EB%A0%A4%EB%8B%A4%EB%B4%84.png",
+    "포옹_허리": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%EC%B9%A8%EB%8C%80%EC%97%90%EC%84%9C%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%96%B4%EC%9D%98%20%ED%97%88%EB%A6%AC%EB%A5%BC%20%EA%BB%B4%EC%95%88%EC%9D%8C(%EC%95%84%EB%9E%AB%EB%8F%84%EB%A6%AC).png",
+    "키스": "https://raw.githubusercontent.com/appppie1717-beep/winter-chat/main/%ED%82%A4%EC%8A%A4%ED%95%98%EB%8A%94%EC%A4%91(%EB%82%A8%EC%9E%90%20%EC%96%BC%EA%B5%B4%20%EB%B0%98%EC%AF%A4%20%EB%82%98%EC%98%B4.png"
 }
 
 api_key = st.secrets["GOOGLE_API_KEY"]
@@ -140,7 +141,6 @@ DEFAULT_MINGUK_PERSONA = """[본질적 성격]
 3. 갑자기 달달한 멘트나 플러팅을 훅 치고 들어오는 걸 좋아해.
 4. 비밀/콤플렉스: 겉으론 똑똑해 보이지만 완전 허당이고, 심각한 음치에 몸치야.
 5. 취미/관심사: 게임, 요리, 마술, 작사. 레고와 피규어 수집에 집착해."""
-
 
 # =====================================================================
 # 🚪 2. 로그인 화면
@@ -418,7 +418,6 @@ elif st.session_state.page == "chat_winter":
             supabase.table("chat_memory").insert({"user_name": user_name, "role": "affection", "message": "0"}).execute()
 
     current_items = ", ".join(st.session_state.inventory) if st.session_state.inventory else "아직 받은 선물 없음"
-    # 🔥 파이 패치: 일기장 최대 20개까지만 로드해서 프롬프트에 넣음 (무한 확장 방지)
     recent_summaries = "\n".join(st.session_state.mid_summaries[-20:]) if st.session_state.mid_summaries else "아직 기록된 일기장 없음."
     core_belief = st.session_state.core_belief if st.session_state.core_belief else "아직 뚜렷한 가치관이 형성되지 않음."
     affection_score = st.session_state.affection
@@ -1267,7 +1266,7 @@ elif st.session_state.page == "chat_minguk":
         st.rerun()
 
 # =====================================================================
-# 🌐 7. AI 멀티버스 실시간 단톡방 (하이브리드 패치 완료)
+# 🌐 7. AI 멀티버스 실시간 단톡방 (버그 픽스 완료본!)
 # =====================================================================
 elif st.session_state.page == "chat_multi":
     user_name = st.session_state.user_name
@@ -1352,15 +1351,15 @@ elif st.session_state.page == "chat_multi":
         최근 대화:
         {history_text_for_ai}
 
-        [절대 규칙]
-        1. 방금 마지막으로 말한 사람(현재 '{last_speaker}')이 연속으로 두 번 대답하게 하지 마! 
-        2. 만약 최근 대화의 마지막 메시지가 유저('{user_name}')의 채팅이라면, 하던 대화를 멈추고 무조건 유저의 말에 최우선으로 반응해.
-        3. 할 말 없으면 PASS라고 해.
+        [단톡방 절대 규칙]
+        1. 파이가 가만히 지켜만 보는데 너희들끼리 계속 떠들지 마! 대화가 끊기고 정적이 흐르면 무조건 스피커를 "pass"로 설정해.
+        2. 방금 마지막으로 말한 사람('{last_speaker}')이 연속으로 두 번 대답하게 하지 마! 
+        3. 만약 최근 대화의 마지막 메시지가 유저('{user_name}')의 채팅이라면, 하던 대화를 멈추고 무조건 유저의 말에 최우선으로 반응해.
 
         응답 형식(JSON):
         {{
-            "speaker": "{ ' 또는 '.join(members) } 또는 PASS",
-            "message": "대사 내용"
+            "speaker": "{ ' 또는 '.join(members) } 또는 pass",
+            "message": "대사 내용 (pass일 경우 비워둠)"
         }}
         """
         try:
@@ -1379,7 +1378,7 @@ elif st.session_state.page == "chat_multi":
                 clean_json_text = raw_json_text
             
             parsed = json.loads(clean_json_text.strip())
-            if parsed.get("speaker") in members and parsed.get("message"):
+            if parsed.get("speaker") in members and parsed.get("message") and parsed.get("speaker") != "pass":
                 supabase.table("chat_memory").insert({"user_name": db_room_name, "role": parsed["speaker"], "message": parsed["message"]}).execute()
                 st.session_state.last_msg_time = time.time()
                 st.session_state.multi_turn_count += 1
